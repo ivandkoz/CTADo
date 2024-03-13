@@ -65,47 +65,7 @@ def creation_result_dataframe(file_name, resolution, window, boundaries_df_name=
     return result_dataframe
 
 
-def pileup_over_expected(file_name, resolution, window, flank, result_dataframe_name=None, save=False):
-    '''
-    Counting the average intensity in a given flank within the TAD boundary and normalizing the values.
-    Creating a dataframe with chrom, start & end of TADs boundary and average intensity
-
-    :param file_name: name of mcool file
-    :param resolution: resolution of mcool file
-    :param window: the size of the sliding diamond window used to calculate the insulation score
-    :param result_dataframe_name: ame of dataframe with all boundaries
-    :param flank: how much to flank the center of the features by, in bp
-    :param save: if True saves file, else not
-    :return: dataframe with chrom, start & end of TADs boundaries and average intensity columns
-    '''
-    if not result_dataframe_name:
-        result_dataframe = creation_result_dataframe(file_name, resolution, window, save=save)
-    else:
-        result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
-
-    clr = cooler.Cooler(f'{file_name}::resolutions/{resolution}')
-    chroms_view = pd.DataFrame(data={
-        'chrom': clr.chromsizes.index,
-        'start': [0] * len(clr.chromsizes),
-        'end': clr.chromsizes.values,
-        'name': clr.chromsizes.index
-        })
-    expected = cooltools.expected_cis(clr, view_df=chroms_view, nproc=2, chunksize=1_000_000)
-
-    result_dataframe['mean_intensity'] = np.nan
-    for index, row in result_dataframe.iterrows():
-        data = pd.DataFrame([row['chrom'], row['start'], row['end']]).T
-        data.columns=['chrom', 'start', 'end']
-        data[['start', 'end']] = data[['start', 'end']].astype(int)
-        mean_intensity = np.nanmean(cooltools.pileup(clr, data, expected_df=expected, flank=flank))
-        result_dataframe['mean_intensity'][index] = mean_intensity
-
-    if save:
-        result_dataframe.to_csv(f'pileup_result_{file_name}_{window}.csv')
-    return result_dataframe
-
-
-def intersect_tads(file_name_1, file_name_2, resolution, window, flank, binsize,
+def intersect_tads(file_name_1, file_name_2, resolution, window, binsize,
                     result_1_name=None, result_2_name=None, save=False):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool source file or
@@ -124,35 +84,99 @@ def intersect_tads(file_name_1, file_name_2, resolution, window, flank, binsize,
     '''
 
     if not result_1_name or not result_2_name:
-        result_1 = pileup_over_expected(file_name=file_name_1, resolution=resolution,
-                                        window=window, flank=flank, save=saving)
-        result_2 = pileup_over_expected(file_name=file_name_2, resolution=resolution,
-                                        window=window, flank=flank, save=saving)
+        result_1 = creation_result_dataframe(file_name=clr1_filename, resolution=resolution,
+                                        window=window, save=saving)
+        result_2 = creation_result_dataframe(file_name=clr2_filename, resolution=resolution,
+                                        window=window, save=saving)
     else:
         result_1 = pd.read_csv(f'{result_1_name}', index_col=0)
         result_2 = pd.read_csv(f'{result_2_name}', index_col=0)
-    binsize = 1.5 * binsize
-    cols = "Chromosome Start End mean_intensity".split()
-    result_1.columns = cols
-    result_2.columns = cols
-    gr1, gr2 = pr.PyRanges(result_1), pr.PyRanges(result_2)
-    gr = gr1.join(gr2)
-    df = gr.df
-    rslt_df = df.loc[((df['End'] - df['End_b'] <= binsize) & (df['End'] - df['End_b'] >= -binsize)) &
-                     ((df['Start'] - df['Start_b'] <= binsize) & (df['Start'] - df['Start_b'] >= -binsize))]
+   
+    binsize = binsize * 1.5
+    merged = result_1.merge(result_2, on='chrom').query(f'((start_x - {binsize} <= start_y <= end_x + {binsize}) and (start_x - {binsize} <= end_y <= end_x + {binsize})) or'+
+                                                        f'((start_y - {binsize} <= start_x <= end_y + {binsize}) and (start_y - {binsize} <= end_x <= end_y + {binsize}))')
+    
+    df = merged.loc[(abs(merged['end_x'] - merged['end_y']) <= binsize) & (abs(merged['start_x'] - merged['start_y']) <= binsize)]
+    df.columns = ['chrom', 'start_1', 'end_1', 'start_2', 'end_2']
+    
+    if save:
+        df.to_csv('intersect_result_df.csv')
+    return df
 
-    rslt_df.columns = ['chrom', 'start_1', 'end_1', 'mean_intensity_1', 'start_2', 'end_2', 'mean_intensity_2']
-    rslt_df['difference'] = abs(np.log2(rslt_df['mean_intensity_1'] / rslt_df['mean_intensity_2']))
+def pileup_over_expected(clr1_filename, clr2_filename, resolution, window, flank, binsize,
+                         result_1_name=None, result_2_name=None, result_dataframe_name=None, save=False):
+    '''
+    Creates a dataframe with boundaries intersecting of two mcool files, their intensity and log2FC
+
+    :param file_name_1: name of first mcool file
+    :param file_name_2: name of second mcool file
+    :param resolution: resolution of mcool file
+    :param window: the size of the sliding diamond window used to calculate the insulation score
+    :param flank: how much to flank the center of the features by, in bp
+    :param binsize: bin size, bp
+    :param result_1_name: dataframe name with chrom, start & end of TADs boundary and average intensity columns
+    :param result_2_name: dataframe name with chrom, start & end of TADs boundary and average intensity columns
+    :param result_dataframe_name: dataframe with boundaries intersecting of two mcool files
+    :param save: if True saves file, else not
+    :return: dataframe with boundaries intersecting of two mcool files, their intensity and log2FC
+    '''
+
+    if not result_dataframe_name:
+        result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
+                                          result_1_name, result_2_name, save=True)
+    else:
+        result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
+
+    clr1 = cooler.Cooler(f'{clr1_filename}::resolutions/{resolution}')
+    chroms_view1 = pd.DataFrame(data={
+        'chrom': clr1.chromsizes.index,
+        'start': [0] * len(clr1.chromsizes),
+        'end': clr1.chromsizes.values,
+        'name': clr1.chromsizes.index
+        })
+    expected1 = cooltools.expected_cis(clr1, view_df=chroms_view1, nproc=2, chunksize=1_000_000)
+
+    clr2 = cooler.Cooler(f'{clr2_filename}::resolutions/{resolution}')
+    chroms_view2 = pd.DataFrame(data={
+        'chrom': clr2.chromsizes.index,
+        'start': [0] * len(clr2.chromsizes),
+        'end': clr2.chromsizes.values,
+        'name': clr2.chromsizes.index
+        })
+    expected2 = cooltools.expected_cis(clr2, view_df=chroms_view2, nproc=2, chunksize=1_000_000)
+
+    result_dataframe['mean_intensity_1'] = np.nan
+    result_dataframe['mean_intensity_2'] = np.nan
+    result_dataframe['log2_intensity'] = np.nan
+
+    for index, row in result_dataframe.iterrows():
+        start = min(row['start_1'], row['start_2'])
+        end = min(row['end_1'], row['end_2'])
+
+        data = pd.DataFrame([row['chrom'], start, end]).T
+        data.columns=['chrom', 'start', 'end']
+        data[['start', 'end']] = data[['start', 'end']].astype(int)
+        mean_intensity = np.nanmean(cooltools.pileup(clr1, data, expected_df=expected1, flank=flank))
+        result_dataframe['mean_intensity_1'][index] = mean_intensity
+
+        data = pd.DataFrame([row['chrom'], start, end]).T
+        data.columns=['chrom', 'start', 'end']
+        data[['start', 'end']] = data[['start', 'end']].astype(int)
+        mean_intensity = np.nanmean(cooltools.pileup(clr2, data, expected_df=expected2, flank=flank))
+        result_dataframe['mean_intensity_2'][index] = mean_intensity
+
+        result_dataframe['log2_intensity'] = np.log2(result_dataframe['mean_intensity_1'] / result_dataframe['mean_intensity_2'])
 
     if save:
-        rslt_df.to_csv('result_dataframe.csv')
-    return rslt_df
+        result_dataframe.to_csv(f'pileup_df.csv')
+    return result_dataframe
+
 
 
 file_name_1 = '4DNFIL6BHWZL_rs.mcool'
 file_name_2 = '4DNFIHXCPUAP_rs.mcool'
 resolution = 100_000
-window = 500_000
+window = 400_000
 flank = 200_000
 saving = True
 binsize = 100_000
