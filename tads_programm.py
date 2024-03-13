@@ -173,11 +173,13 @@ def pileup_over_expected(clr1_filename, clr2_filename, resolution, window, flank
 
 
 
-file_name_1 = '4DNFIL6BHWZL_rs.mcool'
-file_name_2 = '4DNFIHXCPUAP_rs.mcool'
+clr1_filename = '4DNFIL6BHWZL_rs.mcool'
+clr2_filename = '4DNFIHXCPUAP_rs.mcool'
 resolution = 100_000
 window = 400_000
 flank = 200_000
-saving = True
 binsize = 100_000
-result = intersect_tads(file_name_1, file_name_2, resolution, window, flank, binsize, save=saving)
+result_dataframe_name = 'intersect_result_df.csv'
+saving = True
+pileup_over_expected(clr1_filename, clr2_filename, resolution, window, flank, binsize,
+                     result_dataframe_name = result_dataframe_name, save=saving)
