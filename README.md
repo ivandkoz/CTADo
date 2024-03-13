@@ -56,7 +56,10 @@ You can see an example of graphic below.
 <br />
 
 ### Example
-As an example run the tool with information below:
+As an example run the tool with information below:<br />
+[4DNFIL6BHWZL_rs.mcool](https://drive.google.com/file/d/12J_5kUk_whg1aSEjopDaWHyY6uA6ZOVE/view?usp=sharing)<br />
+[4DNFIHXCPUAP_rs.mcool](https://drive.google.com/file/d/1-7GqXq4VL6Dc3G2EWYMfcj0ML0ElGOYj/view?usp=sharing)<br />
+
 ```
 clr1_filename = '4DNFIL6BHWZL_rs.mcool'
 clr2_filename = '4DNFIHXCPUAP_rs.mcool'
@@ -93,11 +96,3 @@ Example of graphic:
 <img src="graphics/top_df_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
 </div>
 <br />
-
-
-
-
-
-
-
-
