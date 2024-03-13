@@ -40,6 +40,7 @@ git clone git@github.com:ivandkoz/differential-computing-TADs.git && cd differen
 
 
 ### Usage
+
 To run the `tads_programm.py` script, you can call it from the directory where the tool is located. <br />
 For tool usage the names of mcool or cool files, resolution, window, binsize and file that contains TADs insulating boundaries must be provided.  
 
@@ -56,7 +57,15 @@ You can see an example of graphic below.
 <br />
 
 ### Example
-As an example run the tool with information below:<br />
+
+Before using tool, you might want to normalize the Hi-C data using cooler and cooltools:
+```
+cooler info 4DNFIL6BHWZL.mcool::resolutions/100000
+cooler info 4DNFIHXCPUAP.mcool::resolutions/100000
+```
+Based on information in "sum" column, select the lowest one, with the commands `cooltools random-sample` and `cooler balance`, then perform downsampling and balance the data.
+
+As an example `tads_programm.py` script run with information below (both files were normalized):<br />
 [4DNFIL6BHWZL_rs.mcool](https://drive.google.com/file/d/12J_5kUk_whg1aSEjopDaWHyY6uA6ZOVE/view?usp=sharing)<br />
 [4DNFIHXCPUAP_rs.mcool](https://drive.google.com/file/d/1-7GqXq4VL6Dc3G2EWYMfcj0ML0ElGOYj/view?usp=sharing)<br />
 
@@ -87,7 +96,8 @@ boundaries_df_clr2_filename = '4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv'
 rslt_df_name = 'pileup_df.csv'
 
 
-visualisation(clr1_filename, clr2_filename, boundaries_df_clr1_filename, boundaries_df_clr2_filename, resolution, binsize, rslt_df_name)
+visualisation(clr1_filename, clr2_filename, boundaries_df_clr1_filename, boundaries_df_clr2_filename, 
+              resolution, binsize, rslt_df_name)
 ```
 <br />
 Example of graphic:
