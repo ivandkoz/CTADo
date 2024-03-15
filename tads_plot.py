@@ -102,9 +102,12 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         
         k=1
         for index, row in tad_annot.iterrows():
-            bbox_props = dict(boxstyle="rarrow,pad=0.2", fc="cyan", ec="b", lw=1)
-            ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
-            k=2 if k==1 else 1
+            if row['Orientation'] == 'minus':
+                bbox_props = dict(boxstyle="larrow,pad=0.3", fc="palegreen", ec="g", lw=1)
+                ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
+            else:
+                bbox_props = dict(boxstyle="rarrow,pad=0.3", fc="palegreen", ec="g", lw=1)
+                ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
         
         ax.set_title(f'graphics/clr_1 {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='raw counts');
@@ -136,9 +139,12 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
 
         k=1
         for index, row in tad_annot.iterrows():
-            bbox_props = dict(boxstyle="rarrow,pad=0.2", fc="cyan", ec="b", lw=1)
-            ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
-            k=2 if k==1 else 1
+            if row['Orientation'] == 'minus':
+                bbox_props = dict(boxstyle="larrow,pad=0.3", fc="palegreen", ec="g", lw=1)
+                ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
+            else:
+                bbox_props = dict(boxstyle="rarrow,pad=0.3", fc="palegreen", ec="g", lw=1)
+                ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
 
         ax.set_title(f'clr_2 {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='raw counts');
