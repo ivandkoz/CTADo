@@ -15,7 +15,7 @@ In Hi-C maps, TADs are represented as blocks along the diagonal with sizes rangi
 
 
 <div style='justify-content: center'>
-<img src="img/Example.png" align='center', width="80%">
+<img src="img/chr3.png" align='center', width="80%">
 </div>
 <br />
 
@@ -103,6 +103,6 @@ visualisation(clr1_filename, clr2_filename, boundaries_df_clr1_filename, boundar
 Example of graphic:
 <br />
 <div style='justify-content: center'>
-<img src="graphics/top_df_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
+<img src="graphics/top_3_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
 </div>
 <br />
