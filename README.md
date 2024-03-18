@@ -1,4 +1,4 @@
-# STADo: <a href="">
+# CTADo: <a href="">
 **Comparison tool for Topologically Associated Domains**
 
 *TADs* are smaller structural units of chromosomes that are defined as regions whose DNA sequences preferentially contact each other. <br />
