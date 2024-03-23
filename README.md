@@ -106,3 +106,7 @@ Example of graphic:
 <img src="graphics/top_3_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
 </div>
 <br />
+
+
+Example of split graphic:
+![image](https://github.com/ivandkoz/differential-computing-TADs/assets/131146976/36775868-dca9-478b-a917-4532e2235059)
