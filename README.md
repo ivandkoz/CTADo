@@ -69,36 +69,54 @@ As an example `tads_programm.py` script run with information below (both files w
 [4DNFIL6BHWZL_rs.mcool](https://drive.google.com/file/d/12J_5kUk_whg1aSEjopDaWHyY6uA6ZOVE/view?usp=sharing)<br />
 [4DNFIHXCPUAP_rs.mcool](https://drive.google.com/file/d/1-7GqXq4VL6Dc3G2EWYMfcj0ML0ElGOYj/view?usp=sharing)<br />
 
-```
-clr1_filename = '4DNFIL6BHWZL_rs.mcool'
-clr2_filename = '4DNFIHXCPUAP_rs.mcool'
-resolution = 100_000
-window = 400_000
-flank = 200_000
-binsize = 100_000
-saving = True
+Run command below to see usage and arguments:
 
-
-pileup_over_expected(clr1_filename, clr2_filename, resolution, window, flank, binsize,
-                     result_dataframe_name = result_dataframe_name, save=saving)
+```bash
+python tads_intensity.py -h
 ```
 
-To visualizate obtained results, run `tads_plot.py` script:
+```bash
+usage: TADs intensity [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME] [-df RESULT_DATAFRAME_NAME] [-s {True,False}]
+                      clr1_filename clr2_filename resolution window flank binsize clr1_boundaries_name clr2_boundaries_name
 
+This tool is needed to find changes in TADs intensity
+
+positional arguments:
+  clr1_filename         Name of first mcool file
+  clr2_filename         Name of second mcool file
+  resolution            Resolution of mcool file
+  window                Size of the sliding diamond window
+  flank                 Flank size in bp
+  binsize               Bin size in bp
+  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
+                        cooler insulation table
+  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
+                        cooler insulation table
+
+options:
+  -h, --help            show this help message and exit
+  -r1 RESULT_DF_1_NAME, --result_df_1_name RESULT_DF_1_NAME
+                        The first contact matrix dataframe name with chrom, start & end of TADs boundary
+  -r2 RESULT_DF_2_NAME, --result_df_2_name RESULT_DF_2_NAME
+                        The second contact matrix dataframe name with chrome, start & end of TADs boundary
+  -df RESULT_DATAFRAME_NAME, --result_dataframe_name RESULT_DATAFRAME_NAME
+                        Dataframe name with intersecting TADs of two contact matrixes
+  -s {True,False}, --save {True,False}
+                        True if all result files should be saved, else False
+
+Good luck! (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭
 ```
-clr1_filename = '4DNFIL6BHWZL_rs.mcool'
-clr2_filename = '4DNFIHXCPUAP_rs.mcool'
-resolution = 100_000
-window = 400_000
-binsize = 100_000
-boundaries_df_clr1_filename = '4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv'
-boundaries_df_clr2_filename = '4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv'
-rslt_df_name = 'pileup_df.csv'
 
-
-visualisation(clr1_filename, clr2_filename, boundaries_df_clr1_filename, boundaries_df_clr2_filename, 
-              resolution, binsize, rslt_df_name)
+To perform the test run use:
 ```
+python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True
+```
+or
+```
+python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True -r1 4DNFIL6BHWZL_rs.mcool_400000_result_df.csv -r2 4DNFIHXCPUAP_rs.mcool_400000_result_df.csv -df intensity_change_result.csv
+```
+
+
 <br />
 Example of graphic:
 <br />
