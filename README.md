@@ -72,7 +72,7 @@ As an example `tads_programm.py` script run with information below (both files w
 Run command below to see usage and arguments:
 
 ```bash
-python tads_intensity.py -h
+python CTADO.py -h
 ```
 
 ```bash
@@ -109,7 +109,7 @@ Good luck! (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・�
 
 To perform the test run use:
 ```
-python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True
+python CTADO.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True
 ```
 or
 ```
