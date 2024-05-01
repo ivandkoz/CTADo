@@ -8,8 +8,9 @@ if __name__ == "__main__":
                       prog='TADs intensity', 
                       description='This tool is needed to find changes in TADs intensity', 
                       epilog='Good luck!   (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭')
-    parser.add_argument('clr1_filename', type=str, help='Name of first mcool file')
-    parser.add_argument('clr2_filename', type=str, help='Name of second mcool file')
+
+    parser.add_argument('clr1_filename', type=str, help='Name of first contact matrix in mcool/cool format')
+    parser.add_argument('clr2_filename', type=str, help='Name of second contact matrix in mcool/cool format')
     parser.add_argument('resolution', type=int, help='Resolution of mcool file')
     parser.add_argument('window', type=int, help='Size of the sliding diamond window')
     parser.add_argument('flank', type=int, help='Flank size in bp')
