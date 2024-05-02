@@ -17,8 +17,8 @@ if __name__ == "__main__":
     parser.add_argument('binsize', type=int, help='Bin size in bp')
     parser.add_argument('clr1_boundaries_name', type=str, help='The first contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
     parser.add_argument('clr2_boundaries_name', type=str, help='The second contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
-    parser.add_argument('-r1', '--result_df_1_name', default=None, type=str, help='The first contact matrix dataframe name with chrom, start & end of TADs boundary')
-    parser.add_argument('-r2', '--result_df_2_name', default=None, type=str, help='The second contact matrix dataframe name with chrome, start & end of TADs boundary')
+    parser.add_argument('-r1', '--result_df_1_name', default=None, type=str, help='The first contact matrix dataframe name with chrom, start & end of TADs')
+    parser.add_argument('-r2', '--result_df_2_name', default=None, type=str, help='The second contact matrix dataframe name with chrome, start & end of TADs')
     parser.add_argument('-df', '--result_dataframe_name', default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrixes')
     parser.add_argument('-s', '--save', type=bool, choices=(True, False), default=False, help='True if all result files should be saved, else False')
 
