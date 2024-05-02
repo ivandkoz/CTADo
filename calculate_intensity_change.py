@@ -115,8 +115,12 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     :param window: the size of the sliding diamond window used to calculate the insulation score
     :param flank: how much to flank the center of the features by, in bp
     :param binsize: bin size, bp
-    :param clr1_boundaries_name: dataframe name with chrom, start & end of TADs boundary
-    :param clr2_boundaries_name: dataframe name with chrom, start & end of TADs boundary
+    :param clr1_boundaries_name: The first contact matrix boundaries argument, a dataframe name with TADs 
+                                 boundaries in chrom, start, end format or cooler insulation table
+    :param clr2_boundaries_name: The second contact matrix boundaries argument, a dataframe name with TADs
+                                 boundaries in chrom, start, end format or cooler insulation table
+    :param result_df_1_name: dataframe name with chrom, start & end of TADs
+    :param result_df_2_name: dataframe name with chrom, start & end of TADs
     :param save: if True saves file, else not
     :return: an output dataframe with information of two mcool/cool files s TADs that changed their intensity in format: 
             chrom, start_1, end_1, start_2, end_2, mean_intensity_1, mean_intensity_2, log2_intensity, pvalue
