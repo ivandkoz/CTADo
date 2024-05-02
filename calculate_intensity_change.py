@@ -21,7 +21,7 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
     :param window: the size of the sliding diamond window used to calculate the insulation score
     :param boundaries_df_name: name of dataframe with all boundaries
     :param save: if True saves file, else not
-    :return: dataframe with TADs boundaries
+    :return: dataframe with TADs
     '''
     df = pd.read_csv(f'{boundaries_df_name}', index_col=0)
     
@@ -49,19 +49,19 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
 def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name, 
                    result_df_1_name=None, result_df_2_name=None, save=False):
     '''
-    Creating a table with boundaries intersecting by no more than 1.5 bins from mcool source file or
+    Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
 
-    :param file_name_1: name of first mcool file
-    :param file_name_2: name of second mcool file
+    :param clr1_filename: name of first mcool file
+    :param clr2_filename: name of second mcool file
     :param resolution: resolution of mcool file
     :param window: the size of the sliding diamond window used to calculate the insulation score
     :param flank: how much to flank the center of the features by, in bp
     :param binsize: bin size, bp
-    :param result_1_name: dataframe name with chrom, start & end of TADs boundary and average intensity columns
-    :param result_2_name: dataframe name with chrom, start & end of TADs boundary and average intensity columns
+    :param clr1_boundaries_name: dataframe name with chrom, start & end of TADs boundary
+    :param clr2_boundaries_name: dataframe name with chrom, start & end of TADs boundary
     :param save: if True saves file, else not
-    :return: dataframe with boundaries intersecting of two mcool files
+    :return: dataframe with boundaries intersecting of two mcool/cool files s TADs
     '''
 
 
@@ -93,7 +93,7 @@ def get_pval(x, mean_lmi1, std_lmi1):
 
 def count_pvalue(result_df):
     """
-    P-value for changed intensity TADs
+    Calculates p-value for changed intensity TADs
     """
     result_df['log2_mi_1'] = np.log2(result_df['mean_intensity_1'])
     mean_lmi1 = result_df['log2_mi_1'].mean()
@@ -105,7 +105,22 @@ def count_pvalue(result_df):
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
                                 result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None, save=False):
+    '''
+    Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
+    from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
 
+    :param clr1_filename: name of first mcool file
+    :param clr2_filename: name of second mcool file
+    :param resolution: resolution of mcool file
+    :param window: the size of the sliding diamond window used to calculate the insulation score
+    :param flank: how much to flank the center of the features by, in bp
+    :param binsize: bin size, bp
+    :param clr1_boundaries_name: dataframe name with chrom, start & end of TADs boundary
+    :param clr2_boundaries_name: dataframe name with chrom, start & end of TADs boundary
+    :param save: if True saves file, else not
+    :return: an output dataframe with information of two mcool/cool files s TADs that changed their intensity in format: 
+            chrom, start_1, end_1, start_2, end_2, mean_intensity_1, mean_intensity_2, log2_intensity, pvalue
+    '''
     if not result_dataframe_name:
         result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
                                           clr1_boundaries_name, clr2_boundaries_name, result_df_1_name, result_df_2_name, save=save)
