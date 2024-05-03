@@ -1,6 +1,6 @@
 import argparse
-from calculate_intensity_change import count_tads_change_intensity
-from tads_plot import visualisation
+from scr/calculate_intensity_change import count_tads_change_intensity
+from scr/tads_plot import visualisation
 
 
 if __name__ == "__main__":
