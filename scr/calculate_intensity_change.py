@@ -10,6 +10,23 @@ import warnings
 warnings.filterwarnings(action='ignore', message='Mean of empty slice')
 pd.options.mode.chained_assignment = None
 
+def get_boundaries(file_name, resolution, window, save=False):
+    '''
+    Sets the insulation_table for the given mcool file and window size.
+
+    :param file_name: name of mcool/cool file
+    :param resolution: resolution of mcool/cool file
+    :param window: the size of the sliding diamond window used to calculate the insulation score
+    :save: if True saves file, else not
+    :return: dataframe with all boundaries
+    '''
+    clr = cooler.Cooler(f'{file_name}::resolutions/{resolution}')
+    boundaries_df = insulation(clr, [window], verbose=True)
+
+    if save:
+        boundaries_df.to_csv(f'{file_name}_{window}_boundaries.csv')
+    return boundaries_df
+
 
 def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False):
     '''
