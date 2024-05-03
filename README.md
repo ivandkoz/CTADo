@@ -41,34 +41,22 @@ git clone git@github.com:ivandkoz/differential-computing-TADs.git && cd differen
 
 ### Usage
 
-To run the `tads_programm.py` script, you can call it from the directory where the tool is located. <br />
+To run the `CTADO.py` script, you can call it from the directory where the tool is located. <br />
 For tool usage the names of mcool or cool files, resolution, window, binsize and file that contains TADs insulating boundaries must be provided.  
 
 This file can be retrieved using:
 * [cooltools](https://github.com/open2c/cooltools)
 * [Armatus](https://github.com/kingsfordgroup/armatus)
-* use the built-in tool function (based on cooltools TADs boundary markup) - you can run script without providing TADs insulating boundaries file name
+* use the built-in function (based on cooltools TADs boundary markup) - you can run script without providing TADs insulating boundaries file name (exanple in GitHub wiki)
 
 ####
-To visualize the results of intensity type of boundary changes, it is necessary to run the script `tads_plot.py`. <br />
-By default, the program creates the top 5 most changed by intensity type of TADs. To use it, mcool or cool files, resolution, window, binsize, both files that contains TADs insulating boundaries, and result of `tads_programm.py` script - dataframe with intensity information - must be provided. 
+Vizualisation the results of intensity type of boundary changes are included in `CTADo.py`. <br />
+By default, the program creates the top 5 most changed by intensity type of TADs. To use it, mcool or cool files, resolution, window, binsize, both files that contains TADs insulating boundaries, and result of `CTADO.py` script - dataframe with intensity information - must be provided. 
 You can see an example of graphic below.
 <br />
 <br />
 
 ### Example
-
-Before using tool, you might want to normalize the Hi-C data using cooler and cooltools:
-```
-cooler info 4DNFIL6BHWZL.mcool::resolutions/100000
-cooler info 4DNFIHXCPUAP.mcool::resolutions/100000
-```
-Based on information in "sum" column, select the lowest one, with the commands `cooltools random-sample` and `cooler balance`, then perform downsampling and balance the data.
-
-As an example `tads_programm.py` script run with information below (both files were normalized):<br />
-[4DNFIL6BHWZL_rs.mcool](https://drive.google.com/file/d/12J_5kUk_whg1aSEjopDaWHyY6uA6ZOVE/view?usp=sharing)<br />
-[4DNFIHXCPUAP_rs.mcool](https://drive.google.com/file/d/1-7GqXq4VL6Dc3G2EWYMfcj0ML0ElGOYj/view?usp=sharing)<br />
-
 Run command below to see usage and arguments:
 
 ```bash
@@ -76,29 +64,36 @@ python CTADO.py -h
 ```
 
 ```bash
-usage: TADs intensity [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME] [-df RESULT_DATAFRAME_NAME] [-s {True,False}]
-                      clr1_filename clr2_filename resolution window flank binsize clr1_boundaries_name clr2_boundaries_name
+usage: Differential analysis of interacting domains between two contact matrixes
+       [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME] [-df RESULT_DATAFRAME_NAME]
+       [-s {True,False}]
+       clr1_filename clr2_filename resolution window flank binsize clr1_boundaries_name
+       clr2_boundaries_name
 
-This tool is needed to find changes in TADs intensity
+This tool is needed to find four types of changes in TADs between two contact matrixes
 
 positional arguments:
-  clr1_filename         Name of first mcool file
-  clr2_filename         Name of second mcool file
+  clr1_filename         Name of first contact matrix in mcool/cool format
+  clr2_filename         Name of second contact matrix in mcool/cool format
   resolution            Resolution of mcool file
   window                Size of the sliding diamond window
   flank                 Flank size in bp
   binsize               Bin size in bp
-  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
-                        cooler insulation table
-  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
-                        cooler insulation table
+  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with
+                        TADs boundaries in chrom, start, end format or cooler insulation
+                        table
+  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name
+                        with TADs boundaries in chrom, start, end format or cooler
+                        insulation table
 
 options:
   -h, --help            show this help message and exit
   -r1 RESULT_DF_1_NAME, --result_df_1_name RESULT_DF_1_NAME
-                        The first contact matrix dataframe name with chrom, start & end of TADs boundary
+                        The first contact matrix dataframe name with chrom, start & end of
+                        TADs
   -r2 RESULT_DF_2_NAME, --result_df_2_name RESULT_DF_2_NAME
-                        The second contact matrix dataframe name with chrome, start & end of TADs boundary
+                        The second contact matrix dataframe name with chrome, start & end
+                        of TADs
   -df RESULT_DATAFRAME_NAME, --result_dataframe_name RESULT_DATAFRAME_NAME
                         Dataframe name with intersecting TADs of two contact matrixes
   -s {True,False}, --save {True,False}
@@ -116,6 +111,7 @@ or
 python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True -r1 4DNFIL6BHWZL_rs.mcool_400000_result_df.csv -r2 4DNFIHXCPUAP_rs.mcool_400000_result_df.csv -df intensity_change_result.csv
 ```
 
+Additionaly, you can see the whole example in GitHub Wiki.
 
 <br />
 Example of graphic:
