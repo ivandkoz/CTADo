@@ -5,8 +5,8 @@ from scr.tads_plot import visualisation
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-                      prog='TADs intensity', 
-                      description='This tool is needed to find changes in TADs intensity', 
+                      prog='Differential analysis of interacting domains between two contact matrixes', 
+                      description='This tool is needed to find four types of changes in TADs between two contact matrixes', 
                       epilog='Good luck!   (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭')
 
     parser.add_argument('clr1_filename', type=str, help='Name of first contact matrix in mcool/cool format')
@@ -26,4 +26,4 @@ if __name__ == "__main__":
 
     count_tads_change_intensity(args.clr1_filename, args.clr2_filename, args.resolution, args.window, args.flank, args.binsize, args.clr1_boundaries_name, args.clr2_boundaries_name, args.result_df_1_name, args.result_df_2_name, args.result_dataframe_name, args.save)
 
-    visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, 'intensity_change_result.csv', 'intensity')
+    visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, 'data/intensity_change_result.csv', 'intensity')
