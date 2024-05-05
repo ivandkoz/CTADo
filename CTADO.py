@@ -1,7 +1,7 @@
 import argparse
 from scr.calculate_intensity_change import count_tads_change_intensity
 from scr.tads_plot import visualisation
-
+from scr.split_merge_detect import  main_split_merge_detection
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -25,5 +25,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     count_tads_change_intensity(args.clr1_filename, args.clr2_filename, args.resolution, args.window, args.flank, args.binsize, args.clr1_boundaries_name, args.clr2_boundaries_name, args.result_df_1_name, args.result_df_2_name, args.result_dataframe_name, args.save)
-
+    main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize, f'{args.clr1_filename}_{args.window}_result_df.csv', f'{args.clr2_filename}_{args.window}_result_df.csv')
     visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, 'data/intensity_change_result.csv', 'intensity')
