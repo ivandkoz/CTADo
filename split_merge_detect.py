@@ -2,7 +2,10 @@ import numpy as np
 import pandas as pd
 import os
 import warnings
-
+import cooltools
+import cooler
+from cooltools import insulation
+import pyranges as pr
 
 BIN_SIZE_COEF = 1.5
 
@@ -64,25 +67,107 @@ def find_split(tad1_chr_coords: pd.DataFrame, tad2_chr_coords: pd.DataFrame,
         (tads_region_intersect.start_tad1 <= tads_region_intersect.start_tad2) &
         (tads_region_intersect.end_tad1 >= tads_region_intersect.end_tad2) &
         (tads_region_intersect.size_tad1 >= tads_region_intersect.size_tad2)]
+
     tads_region_intersect = tads_region_intersect[tads_region_intersect.duplicated(subset='start_tad1', keep=False)]
     # display(tads_region_intersect)
-    tads_region_intersect = tads_region_intersect.groupby(['chrom', 'start_tad1', 'end_tad1', 'size_tad1']).agg(
+    tads_region_intersect_size = tads_region_intersect.groupby(['chrom', 'start_tad1', 'end_tad1', 'size_tad1']).agg(
         {'start_tad2': 'min', 'end_tad2': 'max', 'size_tad2': 'sum'})
-    tads_region_intersect = tads_region_intersect.reset_index()
-    tads_region_intersect = tads_region_intersect.query('size_tad1 >= size_tad2')
+    tads_region_intersect_size = tads_region_intersect_size.reset_index()
+    tads_region_intersect_size = tads_region_intersect_size.query('size_tad1 >= size_tad2')
+    tads_region_intersect = tads_region_intersect[
+        tads_region_intersect['start_tad1'].isin(tads_region_intersect_size['start_tad1'])]
     # display(tads_region_intersect)
     return tads_region_intersect
 
 
 def save_frame(path_save: os.path, option: str, saving_dataframe: pd.DataFrame) -> None:
+    saving_dataframe = saving_dataframe.reset_index()
+    if option == "merge":
+        saving_dataframe = saving_dataframe.rename(columns={"start_tad1": "start_2", "start_tad2": "start_1",
+                                                            "end_tad1": "end_2", "end_tad2": "end_1"})
+
+    else:
+        saving_dataframe = saving_dataframe.rename(columns={"start_tad1": "start_1", "start_tad2": "start_2",
+                                                            "end_tad1": "end_1", "end_tad2": "end_2"})
+    print(saving_dataframe)
+    saving_dataframe = saving_dataframe.drop(columns=['size_tad1', 'size_tad2', 'index'])
+    saving_dataframe = saving_dataframe.dropna()
     save_name = f'{option}_coords.csv'
     save_path_df = os.path.join(path_save, save_name)
     saving_dataframe.to_csv(save_path_df)
     return
 
 
-def main_split_merge_detection(path_tad_1: os.path, path_tad_2: os.path,
+def choose_region(df, clr_1, clr_2, binsize):
+    intensity_dict = {}
+    small_tads_choords = []
+    df_with_value = df
+    df_with_value['pvalue'] = None
+    for index, row in df.iterrows():
+        if index == 0:
+            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
+        # print(main_tad_choords)
+        # print(small_tads_choords)
+        if main_tad_choords != row[['chrom', 'start_tad1', 'end_tad1']].to_list():
+            df_with_value.loc[index, 'pvalue'] = create_diff_matrix(main_tad_choords, small_tads_choords, clr_1, clr_2,
+                                                                    binsize)
+            # intensity_dict[main_tad_choords] = (square_mean, square_var, hill_mean, hill_var)
+            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
+            small_tads_choords = []
+        small_tads_choords.append(row[['start_tad2', 'end_tad2']].to_list())
+    return df_with_value
+
+
+def create_diff_matrix(main_tad_choords, small_tads_choords, clr_1, clr_2, binsize):
+    region = main_tad_choords
+    try:
+        matrix1 = clr_1.matrix(balance=False).fetch(region)
+        matrix2 = clr_2.matrix(balance=False).fetch(region)
+    except ValueError:
+        return None
+
+    diff_matrix = np.log(matrix1 + 1) - np.log(matrix2 + 1)
+    return calculate_intensity(diff_matrix, main_tad_choords, small_tads_choords, binsize)
+
+
+def calculate_intensity(diff_matrix, main_tad_choords, small_tads_choords, binsize):
+    start, end = main_tad_choords[1], main_tad_choords[2]
+    square_intensity = []
+    hill_intensity = []
+    square_intensity_var = []
+    hill_intensity_var = []
+    intensity_big_tad = np.mean(diff_matrix)
+    for tad_id, small_tad in enumerate(small_tads_choords):
+        if tad_id == len(small_tads_choords) - 1:
+            hill_intensity_tad.append(
+                np.mean(diff_matrix[start_1_corrected:end_1_corrected1 + 1, start_1_corrected:end_1_corrected1 + 1]))
+            continue
+        start1, end1 = small_tad[0], small_tad[1]
+        start2, end2 = small_tads_choords[tad_id + 1][0], small_tads_choords[tad_id + 1][1]
+        start_1_corrected, end_1_corrected1 = int((start1 - start) / binsize), int((end1 - start) / binsize)
+        start_2_corrected, end_2_corrected1 = int((start2 - start) / binsize), int((end2 - start) / binsize)
+
+        square_intensity.append(
+            np.mean(diff_matrix[start_1_corrected:end_1_corrected1, start_2_corrected + 1:end_2_corrected1 + 1]))
+        square_intensity_var.append(
+            np.var(diff_matrix[start_1_corrected:end_1_corrected1, start_2_corrected + 1:end_2_corrected1 + 1]))
+        hill_intensity.append(
+            np.mean(diff_matrix[start_1_corrected:end_1_corrected1 + 1, start_1_corrected:end_1_corrected1 + 1]))
+        hill_intensity_var.append(
+            np.var(diff_matrix[start_1_corrected:end_1_corrected1 + 1, start_1_corrected:end_1_corrected1 + 1]))
+    square_mean = np.mean(square_intensity)
+    square_var = np.mean(square_intensity_var)
+    hill_mean = np.mean(hill_intensity)
+    hill_var = np.mean(hill_intensity_var)
+    diff = square_mean - hill_mean
+    return diff
+
+
+def main_split_merge_detection(clr1_filename, clr2_filename, resolution, binsize,
+                               path_tad_1: os.path, path_tad_2: os.path,
                                option: str, path_save: os.path = './'):
+    clr_1 = cooler.Cooler(f'{clr1_filename}::resolutions/{resolution}')
+    clr_2 = cooler.Cooler(f'{clr2_filename}::resolutions/{resolution}')
     tad_split_table = pd.DataFrame()
     tad1, tad2 = create_tads_tables(path_tad_1, path_tad_2)
     if option == 'merge':
@@ -93,12 +178,11 @@ def main_split_merge_detection(path_tad_1: os.path, path_tad_2: os.path,
         if tad_split_table.empty is True:
             tad_split_table = find_split(tad1_chr_coords, tad2_chr_coords)
         else:
-            tad_split_table = pd.concat([tad_split_table, find_split(tad1_chr_coords, tad2_chr_coords)])
-    save_frame(path_save, option, tad_split_table)
-    return tad_split_table
+            tad_split_table = pd.concat([tad_split_table, find_split(tad1_chr_coords, tad2_chr_coords)],
+                                        ignore_index=True)
 
-##########################
-# Пример использования:
-# p1 = "./4DNFIHXCPUAP_rs.mcool_400000_result_df.csv"
-# p2 = "./4DNFIL6BHWZL_rs.mcool_400000_result_df.csv"
-# split_map  = main_split_merge_detection(p1, p2, 'split')
+    final_table = choose_region(tad_split_table, clr_1, clr_2, binsize)
+    save_frame(path_save, option, final_table)
+    # print(tad_split_table)
+    return
+
