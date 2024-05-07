@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import cooltools
@@ -150,6 +151,7 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     else:
         result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
 
+    num_cpus = int(os.cpu_count())
 
     clr1 = cooler.Cooler(f'{clr1_filename}::resolutions/{resolution}')
     chroms_view1 = pd.DataFrame(data={
@@ -158,7 +160,7 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
         'end': clr1.chromsizes.values,
         'name': clr1.chromsizes.index
         })
-    expected1 = cooltools.expected_cis(clr1, view_df=chroms_view1, nproc=2, chunksize=1_000_000)
+    expected1 = cooltools.expected_cis(clr1, view_df=chroms_view1, nproc=num_cpus, chunksize=1_000_000)
 
     clr2 = cooler.Cooler(f'{clr2_filename}::resolutions/{resolution}')
     chroms_view2 = pd.DataFrame(data={
@@ -167,7 +169,7 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
         'end': clr2.chromsizes.values,
         'name': clr2.chromsizes.index
         })
-    expected2 = cooltools.expected_cis(clr2, view_df=chroms_view2, nproc=2, chunksize=1_000_000)
+    expected2 = cooltools.expected_cis(clr2, view_df=chroms_view2, nproc=num_cpus, chunksize=1_000_000)
 
     result_dataframe['mean_intensity_1'] = np.nan
     result_dataframe['mean_intensity_2'] = np.nan
