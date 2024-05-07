@@ -100,8 +100,6 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     df = merged.loc[(abs(merged['end_x'] - merged['end_y']) <= binsize) & (abs(merged['start_x'] - merged['start_y']) <= binsize)]
     df.columns = ['chrom', 'start_1', 'end_1', 'start_2', 'end_2']
 
-    if save:
-        df.to_csv(f'{save_directory}/intersect_result_df.csv')
     return df
 
 
@@ -194,6 +192,6 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
         result_dataframe['log2_intensity'] = np.log2(result_dataframe['mean_intensity_1'] / result_dataframe['mean_intensity_2'])
 
     result_dataframe = count_pvalue(result_dataframe)
-    result_dataframe.to_csv(f'intensity_change_result.csv')
+    result_dataframe.to_csv(f'{save_directory}/intensity_change_result.csv')
 
     return result_dataframe
