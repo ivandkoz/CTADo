@@ -1,4 +1,4 @@
-name: test_tad
+name: ctado
 channels:
   - conda-forge
 dependencies:
