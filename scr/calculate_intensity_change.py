@@ -148,7 +148,7 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     if not result_dataframe_name:
         result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
                                           clr1_boundaries_name, clr2_boundaries_name, result_df_1_name,
-                                          result_df_2_name, save=save, save_directory)
+                                          result_df_2_name, save=save, save_directory=save_directory)
     else:
         result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
 
