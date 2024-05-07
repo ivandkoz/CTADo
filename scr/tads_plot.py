@@ -172,5 +172,5 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='raw counts');
         format_ticks(ax)
-        plt.savefig(f"graphics/{change}_{i[0]}_{i[1]}_{i[2]}.jpg")
+        plt.savefig(f"{save_directory}/graphics/{change}_{i[0]}_{i[1]}_{i[2]}.jpg")
         plt.tight_layout()
