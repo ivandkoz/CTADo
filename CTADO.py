@@ -1,7 +1,14 @@
+import os
+import typing
 import argparse
 from scr.calculate_intensity_change import count_tads_change_intensity
 from scr.tads_plot import visualisation
 from scr.split_merge_detect import  main_split_merge_detection
+
+INTENSITY = 'intensity_change_result.csv'
+SPLIT = 'split_coords.csv'
+MERGE = 'merge_coords.csv'
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -21,9 +28,11 @@ if __name__ == "__main__":
     parser.add_argument('-r2', '--result_df_2_name', default=None, type=str, help='The second contact matrix dataframe name with chrome, start & end of TADs')
     parser.add_argument('-df', '--result_dataframe_name', default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrixes')
     parser.add_argument('-s', '--save', type=bool, choices=(True, False), default=False, help='True if all result files should be saved, else False')
-
+    parser.add_argument('-sd', '--save_directory', type=os.Path, default='./' help='The path to the save directory')
     args = parser.parse_args()
 
     count_tads_change_intensity(args.clr1_filename, args.clr2_filename, args.resolution, args.window, args.flank, args.binsize, args.clr1_boundaries_name, args.clr2_boundaries_name, args.result_df_1_name, args.result_df_2_name, args.result_dataframe_name, args.save)
-    main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize, f'{args.clr1_filename}_{args.window}_result_df.csv', f'{args.clr2_filename}_{args.window}_result_df.csv')
-    visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, 'data/intensity_change_result.csv', 'intensity')
+    main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize, f'{args.clr1_filename}_{args.window}_result_df.csv', f'{args.clr2_filename}_{args.window}_result_df.csv', args.save_directory)
+    for file in [INTENSITY, SPLIT, MERGE]:
+        type_of_change = file[:file.find('_')]
+        visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}', type_of_change)
