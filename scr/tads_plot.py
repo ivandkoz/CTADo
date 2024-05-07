@@ -39,35 +39,16 @@ def plot_tads(tads_annot, boundaries_df_clr_filename, window):
 # change: intensity or split/merge
 def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename, resolution, binsize, window, rslt_df_name, change):
 
-    if change == 'intensity':
-        rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
-        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)  # .head(5)
-        most_diff_tads = []
-        binsize = binsize * 1.5
-        for index, row in df.iterrows():
-            most_diff_tads.append([row['chrom'],  max(row['start_1'], row['start_2']) - binsize * 5,
-                                   max(row['end_1'], row['end_2']) + binsize * 5])
-        tads_annot = pd.DataFrame(most_diff_tads, columns=['Chromosome', 'Start', 'End'])
-        tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x + 5 * binsize)
-        tads_annot['End'] = tads_annot['End'].apply(lambda x: x - 5 * binsize)
-
-    else:
-        rslt_df = pd.read_csv(f'{rslt_df_name}', sep='\t', index_col=0)
-
-        #rslt_df = rslt_df.drop_duplicates(subset=['chrom', 'start', 'end'], keep='first')
-
-        if change == 'merge':
-            tads_annot = rslt_df.iloc[[25, 100, 150, 200, 220]]
-        else:
-            tads_annot = rslt_df.iloc[[1, 110, 115, 210, 155]]
-
-        tads_annot = tads_annot.rename(columns={'chrom': 'Chromosome', 'start': 'Start', 'end': 'End'})
-        tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x - binsize * 5)
-        tads_annot['End'] = tads_annot['End'].apply(lambda x: x + binsize * 5)
-        most_diff_tads = tads_annot.values.tolist()
-        tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x + 5 * binsize)
-        tads_annot['End'] = tads_annot['End'].apply(lambda x: x - 5 * binsize)
-
+    rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
+    df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)
+    most_diff_tads = []
+    binsize = binsize * 1.5
+    for index, row in df.iterrows():
+        most_diff_tads.append([row['chrom'],  max(row['start_1'], row['start_2']) - binsize * 5,
+                               max(row['end_1'], row['end_2']) + binsize * 5])
+    tads_annot = pd.DataFrame(most_diff_tads, columns=['Chromosome', 'Start', 'End'])
+    tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x + 5 * binsize)
+    tads_annot['End'] = tads_annot['End'].apply(lambda x: x - 5 * binsize)
 
     genes = pd.read_csv('ncbi_dataset.tsv',sep='\t')[['Chromosome', 'Begin', 'End', 'Gene_name', 'Symbol', 'Orientation']]
     tads_annot['Chromosome'] = tads_annot['Chromosome'].replace(REPLACE_DICT)
@@ -143,11 +124,8 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
                 ax.text(row['Start'], start - (k/1.6)* binsize, row['Symbol'], ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
             k=2 if k==1 else 1
 
-        if change == 'intensity':
-            ax.set_title(f'{change} {count_top} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
-        else:
-            ax.set_title(f'{change} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
-
+        ax.set_title(f'{change} {count_top} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
+        
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='raw counts');
         ax.set_ylabel('position, Mb')
         format_ticks(ax)
@@ -189,11 +167,8 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
                         ha="center", va="top", rotation=0, size=5, bbox=bbox_props)
             k=2 if k==1 else 1
 
-        if change == 'intensity':
-            ax.set_title(f'{change} {count_top} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
-        else:
-            ax.set_title(f'{change} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
-
+        ax.set_title(f'{change} {count_top} {i[0]}: {binsize * 5 +i[1]:,}-{i[2]- binsize * 5:,}', y=1.08)
+        
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='raw counts');
         format_ticks(ax)
         plt.savefig(f"graphics/{change}_{i[0]}_{i[1]}_{i[2]}.jpg")
