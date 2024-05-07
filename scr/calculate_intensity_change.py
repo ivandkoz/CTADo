@@ -85,10 +85,10 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     if not result_df_1_name or not result_df_2_name:
         result_1 = creation_tads_dataframe(filename=clr1_filename, resolution=resolution,
                                            window=window, boundaries_df_name=clr1_boundaries_name,
-                                           save=save, save_directory)
+                                           save=save, save_directory=save_directory)
         result_2 = creation_tads_dataframe(filename=clr2_filename, resolution=resolution,
                                            window=window, boundaries_df_name=clr2_boundaries_name,
-                                           save=save, save_directory)
+                                           save=save, save_directory=save_directory)
     else:
         result_1 = pd.read_csv(f'{result_df_1_name}', index_col=0)
         result_2 = pd.read_csv(f'{result_df_2_name}', index_col=0)
