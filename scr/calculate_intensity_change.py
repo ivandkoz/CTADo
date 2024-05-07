@@ -28,7 +28,7 @@ def get_boundaries(file_name, resolution, window, save=False):
     return boundaries_df
 
 
-def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False, save_directory):
+def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False, save_directory='./'):
     '''
     Creates a dataframe containing the chromosome name and tad boundaries on provided resolution.
     If boundaries_df_name is missing, a dataframe is created using get_boundaries function
@@ -64,7 +64,7 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
 
 
 def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name, 
-                   result_df_1_name=None, result_df_2_name=None, save=False, save_directory):
+                   result_df_1_name=None, result_df_2_name=None, save=False, save_directory='./'):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -124,7 +124,7 @@ def count_pvalue(result_df):
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
                                 result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
-                                save=False, save_directory):
+                                save=False, save_directory='./'):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
