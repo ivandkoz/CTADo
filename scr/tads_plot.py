@@ -50,7 +50,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
     tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x + 5 * binsize)
     tads_annot['End'] = tads_annot['End'].apply(lambda x: x - 5 * binsize)
 
-    genes = pd.read_csv('ncbi_dataset.tsv',sep='\t')[['Chromosome', 'Begin', 'End', 'Gene_name', 'Symbol', 'Orientation']]
+    genes = pd.read_csv('data/ncbi_dataset.tsv',sep='\t')[['Chromosome', 'Begin', 'End', 'Gene_name', 'Symbol', 'Orientation']]
     tads_annot['Chromosome'] = tads_annot['Chromosome'].replace(REPLACE_DICT)
     genes = genes.rename(columns={'Begin': 'Start'})
     gr1, gr2 = pr.PyRanges(genes), pr.PyRanges(tads_annot)
