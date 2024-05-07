@@ -28,7 +28,7 @@ def get_boundaries(file_name, resolution, window, save=False):
     return boundaries_df
 
 
-def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False):
+def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False, save_directory):
     '''
     Creates a dataframe containing the chromosome name and tad boundaries on provided resolution.
     If boundaries_df_name is missing, a dataframe is created using get_boundaries function
@@ -59,12 +59,12 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
 
     result_dataframe = pd.DataFrame(out_list, columns=['chrom', 'start', 'end'])
 
-    result_dataframe.to_csv(f'{filename}_{window}_result_df.csv')
+    result_dataframe.to_csv(f'{save_directory}/{filename}_{window}_result_df.csv')
     return result_dataframe
 
 
 def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name, 
-                   result_df_1_name=None, result_df_2_name=None, save=False):
+                   result_df_1_name=None, result_df_2_name=None, save=False, save_directory):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -84,9 +84,11 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
 
     if not result_df_1_name or not result_df_2_name:
         result_1 = creation_tads_dataframe(filename=clr1_filename, resolution=resolution,
-                                           window=window, boundaries_df_name=clr1_boundaries_name, save=save)
+                                           window=window, boundaries_df_name=clr1_boundaries_name,
+                                           save=save, save_directory)
         result_2 = creation_tads_dataframe(filename=clr2_filename, resolution=resolution,
-                                           window=window, boundaries_df_name=clr2_boundaries_name, save=save)
+                                           window=window, boundaries_df_name=clr2_boundaries_name,
+                                           save=save, save_directory)
     else:
         result_1 = pd.read_csv(f'{result_df_1_name}', index_col=0)
         result_2 = pd.read_csv(f'{result_df_2_name}', index_col=0)
@@ -99,7 +101,7 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     df.columns = ['chrom', 'start_1', 'end_1', 'start_2', 'end_2']
 
     if save:
-        df.to_csv('intersect_result_df.csv')
+        df.to_csv(f'{save_directory}/intersect_result_df.csv')
     return df
 
 
@@ -121,7 +123,8 @@ def count_pvalue(result_df):
 
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
-                                result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None, save=False):
+                                result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
+                                save=False, save_directory):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -144,7 +147,8 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     '''
     if not result_dataframe_name:
         result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
-                                          clr1_boundaries_name, clr2_boundaries_name, result_df_1_name, result_df_2_name, save=save)
+                                          clr1_boundaries_name, clr2_boundaries_name, result_df_1_name,
+                                          result_df_2_name, save=save, save_directory)
     else:
         result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
 

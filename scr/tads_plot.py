@@ -37,7 +37,8 @@ def plot_tads(tads_annot, boundaries_df_clr_filename, window):
 
 
 # change: intensity or split/merge
-def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename, resolution, binsize, window, rslt_df_name, change):
+def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename,
+                  resolution, binsize, window, rslt_df_name, change, save_directory):
 
     rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
     df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)
@@ -56,9 +57,9 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
     gr1, gr2 = pr.PyRanges(genes), pr.PyRanges(tads_annot)
     gr = gr1.intersect(gr2)
     tad_annots = gr.df
-    if not os.path.exists('graphics'):
-        os.makedirs('graphics')
-    tad_annots.to_csv(f"graphics/annotation_{change}.csv")
+    if not os.path.exists(f'{save_directory}/graphics'):
+        os.makedirs(f'{save_directory}/graphics')
+    tad_annots.to_csv(f"{save_directory}/graphics/annotation_{change}.csv")
 
     bp_formatter = EngFormatter('b')
     clr_1 = cooler.Cooler(f'{file_name_1}::resolutions/{resolution}')
