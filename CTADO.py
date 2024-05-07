@@ -34,7 +34,9 @@ if __name__ == "__main__":
         os.makedirs(args.save_directory)
 
     count_tads_change_intensity(args.clr1_filename, args.clr2_filename, args.resolution, args.window, args.flank, args.binsize, args.clr1_boundaries_name, args.clr2_boundaries_name, args.result_df_1_name, args.result_df_2_name, args.result_dataframe_name, args.save, args.save_directory)
-    main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize, f'{args.clr1_filename}_{args.window}_result_df.csv', f'{args.clr2_filename}_{args.window}_result_df.csv', args.save_directory)
+    main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize,
+                               f'{args.save_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
+                               f'{args.save_directory}/{args.clr2_filename}_{args.window}_result_df.csv')
     for file in [INTENSITY, SPLIT, MERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}', type_of_change, args.save_directory)

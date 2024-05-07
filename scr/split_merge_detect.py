@@ -220,7 +220,7 @@ def main_split_merge_detection(clr1_filename, clr2_filename, resolution, binsize
     clr_2 = cooler.Cooler(f'{clr2_filename}::resolutions/{resolution}')
     for option in ['split', 'merge']:
         tad_split_table = pd.DataFrame()
-        tad1, tad2 = create_tads_tables(path_tad_1, path_tad_2)
+        tad1, tad2 = create_tads_tables(path_tad_1, path_tad_2, path_save)
         if option == 'merge':
             tad1, tad2 = tad2, tad1
 
