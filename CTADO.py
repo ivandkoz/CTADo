@@ -1,8 +1,8 @@
 import os
 import argparse
-from scr.calculate_intensity_change import count_tads_change_intensity
-from scr.tads_plot import visualisation
-from scr.split_merge_detect import  main_split_merge_detection
+from src.calculate_intensity_change import count_tads_change_intensity
+from src.tads_plot import visualisation
+from src.split_merge_detect import main_split_merge_detection
 
 INTENSITY = 'intensity_change_result.csv'
 SPLIT = 'split_coords.csv'
