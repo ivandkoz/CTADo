@@ -81,26 +81,7 @@ def find_split(tad1_chr_coords: pd.DataFrame, tad2_chr_coords: pd.DataFrame,
     tads_region_intersect_size = tads_region_intersect_size.query('size_tad1 >= size_tad2')
     tads_region_intersect = tads_region_intersect[
         tads_region_intersect['start_tad1'].isin(tads_region_intersect_size['start_tad1'])]
-    tads_region_intersect = demodify_tads_map(tads_region_intersect, binsize)
     return tads_region_intersect
-
-
-def choose_region(df, clr_1, clr_2, binsize):
-    small_tads_choords = []
-    df_with_value = df
-    df_with_value['pvalue'] = None
-    for index, row in df.iterrows():
-        if index == 0:
-            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
-        if main_tad_choords != row[['chrom', 'start_tad1', 'end_tad1']].to_list():
-            df_with_value.loc[index, 'pvalue'] = create_diff_matrix(main_tad_choords, small_tads_choords, clr_1, clr_2,
-                                                                    binsize)
-            # intensity_dict[main_tad_choords] = (square_mean, square_var, hill_mean, hill_var)
-            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
-            small_tads_choords = []
-        small_tads_choords.append(row[['start_tad2', 'end_tad2']].to_list())
-    return df_with_value
-
 
 def find_region(main_tad_choords, small_tads_choords):
     main_start = main_tad_choords[1]
@@ -112,23 +93,6 @@ def find_region(main_tad_choords, small_tads_choords):
     end = max([main_end, small_end])
     region = (chrom, start, end)
     return region
-
-
-def create_diff_matrix(main_tad_choords, small_tads_choords, clr_1, clr_2, binsize):
-    region = find_region(main_tad_choords, small_tads_choords)
-    try:
-        matrix1 = clr_1.matrix(balance=False).fetch(region)
-        matrix2 = clr_2.matrix(balance=False).fetch(region)
-    except ValueError:
-        print('ALARM')
-        return None
-    bins = clr_1.bins().fetch(region)
-    coords = list(bins[['start', 'end']].itertuples(index=False, name=None))
-
-    diff_matrix = np.log(matrix1 + 1) - np.log(matrix2 + 1)
-    diff_matrix_df = pd.DataFrame(diff_matrix, columns=coords, index=coords)
-    return calculate_intensity(diff_matrix_df, main_tad_choords, small_tads_choords, binsize, coords, region)
-
 
 def find_coords(position, coords):
     for i, (first, second) in enumerate(coords):
@@ -146,7 +110,6 @@ def calculate_pvalue(square_mean, hill_mean, square_var, hill_var):
 
 
 def calculate_intensity(diff_matrix, main_tad_choords, small_tads_choords, binsize, coords, region):
-    # start, end = region[1], region[2]
     square_intensity = []
     hill_intensity = []
     square_intensity_var = []
@@ -164,6 +127,7 @@ def calculate_intensity(diff_matrix, main_tad_choords, small_tads_choords, binsi
         start2, end2 = small_tads_choords[tad_id + 1][0], small_tads_choords[tad_id + 1][1]
         start_1_corrected, end_1_corrected = find_coords(start1, coords), find_coords(end1, coords)
         start_2_corrected, end_2_corrected = find_coords(start2, coords), find_coords(end2, coords)
+
         square_intensity.append(
             diff_matrix.iloc[start_1_corrected:end_1_corrected,
             start_2_corrected + 1:end_2_corrected + 1].mean().mean())
@@ -183,7 +147,50 @@ def calculate_intensity(diff_matrix, main_tad_choords, small_tads_choords, binsi
     return pvalue
 
 
-def save_frame(path_save: os.path, option: str, saving_dataframe: pd.DataFrame) -> None:
+def create_diff_matrix(main_tad_choords, small_tads_choords, clr_1, clr_2, binsize):
+    region = find_region(main_tad_choords, small_tads_choords)
+    matrix1 = clr_1.matrix(balance=False).fetch(region)
+    matrix2 = clr_2.matrix(balance=False).fetch(region)
+    bins = clr_1.bins().fetch(region)
+    coords = list(bins[['start', 'end']].itertuples(index=False, name=None))
+    diff_matrix = np.log(matrix1 + 1) - np.log(matrix2 + 1)
+    diff_matrix_df = pd.DataFrame(diff_matrix, columns=coords, index=coords)
+    return calculate_intensity(diff_matrix_df, main_tad_choords, small_tads_choords, binsize, coords, region)
+
+
+def choose_region(df, clr_1, clr_2, binsize):
+    small_tads_choords = []
+    df_with_value = df
+    df_with_value['pvalue'] = np.nan
+    big_tad_indicies = []
+    for index, row in df.iterrows():
+        if index == 0:
+            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
+
+        if main_tad_choords != row[['chrom', 'start_tad1', 'end_tad1']].to_list():
+            pvalue = create_diff_matrix(main_tad_choords, small_tads_choords,
+                                        clr_1, clr_2, binsize)
+            first = big_tad_indicies[0]
+            last = big_tad_indicies[-1]
+            df_with_value.loc[first:last, 'pvalue'] = pvalue
+            main_tad_choords = row[['chrom', 'start_tad1', 'end_tad1']].to_list()
+            small_tads_choords = []
+            big_tad_indicies = []
+
+        big_tad_indicies.append(index)
+        small_tads_choords.append(row[['start_tad2', 'end_tad2']].to_list())
+
+        if index == df.index[-1]:
+            pvalue = create_diff_matrix(main_tad_choords, small_tads_choords,
+                                        clr_1, clr_2, binsize)
+            first = big_tad_indicies[0]
+            last = big_tad_indicies[-1]
+            df_with_value.loc[first:last, 'pvalue'] = pvalue
+    return df_with_value
+
+
+def save_frame(path_save: os.path, option: str, saving_dataframe: pd.DataFrame, binsize) -> None:
+    saving_dataframe = demodify_tads_map(saving_dataframe, binsize)
     if option == "merge":
         saving_dataframe = saving_dataframe.rename(columns={"start_tad1": "start_2", "start_tad2": "start_1",
                                                             "end_tad1": "end_2", "end_tad2": "end_1"})
@@ -217,9 +224,8 @@ def main_split_merge_detection(clr1_filename, clr2_filename, resolution, binsize
             else:
                 tad_split_table = pd.concat([tad_split_table, find_split(tad1_chr_coords, tad2_chr_coords)],
                                             ignore_index=True)
-
         final_table = choose_region(tad_split_table, clr_1, clr_2, binsize)
-        save_frame(path_save, option, final_table)
-        split_merge_episodes.append(len(final_table.drop_duplicates()))
+        save_frame(path_save, option, final_table, binsize)
+        split_merge_episodes.append(final_table[['start_tad1', 'end_tad1']].drop_duplicates().shape[0])
     return tuple(split_merge_episodes)
 
