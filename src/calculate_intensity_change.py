@@ -158,7 +158,7 @@ def count_pvalue(result_df):
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
                                 result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
-                                save=False, save_directory='./'):
+                                save=False, save_directory='./', threads=1):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -179,7 +179,6 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     :return: an output dataframe with information of two mcool/cool files s TADs that changed their intensity in format:
             chrom, start_1, end_1, start_2, end_2, mean_intensity_1, mean_intensity_2, log2_intensity, pvalue
     '''
-    num_cpus = int(os.cpu_count())
     if not result_dataframe_name:
         result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
                                           clr1_boundaries_name, clr2_boundaries_name, result_df_1_name,
@@ -190,13 +189,13 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     result_dataframe[['mean_intensity_1', 'mean_intensity_2', 'log2_intensity']] = np.nan
     result_dataframe = result_dataframe.reset_index(drop=True)
 
-    clr1, expected1, chroms_view1 = create_clr_data(clr1_filename, resolution, num_cpus)
-    clr2, expected2, chroms_view2 = create_clr_data(clr2_filename, resolution, num_cpus)
+    clr1, expected1, chroms_view1 = create_clr_data(clr1_filename, resolution, threads)
+    clr2, expected2, chroms_view2 = create_clr_data(clr2_filename, resolution, threads)
 
     pileup_df = create_pileup_df(result_dataframe)
 
-    matrix1 = cooltools.pileup(clr1, pileup_df, nproc=num_cpus, expected_df=expected1, flank=flank)
-    matrix2 = cooltools.pileup(clr2, pileup_df, nproc=num_cpus, expected_df=expected2, flank=flank)
+    matrix1 = cooltools.pileup(clr1, pileup_df, nproc=threads, expected_df=expected1, flank=flank)
+    matrix2 = cooltools.pileup(clr2, pileup_df, nproc=threads, expected_df=expected2, flank=flank)
 
     result_dataframe = add_mean_log2_columns(matrix1, matrix2, result_dataframe)
 
