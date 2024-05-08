@@ -7,6 +7,8 @@ from cooltools import insulation
 import pyranges as pr
 import scipy.stats as stats
 import warnings
+from src.func_condition_wrapper import wrapper_print
+
 warnings.filterwarnings(action='ignore', message='Mean of empty slice')
 pd.options.mode.chained_assignment = None
 
@@ -152,6 +154,7 @@ def count_pvalue(result_df):
     return result_df
 
 
+@wrapper_print
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
                                 result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
@@ -198,4 +201,4 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
     result_dataframe = add_mean_log2_columns(matrix1, matrix2, result_dataframe)
 
     result_dataframe.to_csv(f'{save_directory}/intensity_change_result.csv')
-    return result_dataframe
+    return len(result_dataframe)

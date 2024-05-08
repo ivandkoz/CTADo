@@ -7,6 +7,7 @@ import cooler
 import pyranges as pr
 from cooltools import insulation
 from scipy.stats import mannwhitneyu
+from src.func_condition_wrapper import wrapper_print
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 BINSIZE_COEF = 1.5
@@ -213,11 +214,12 @@ def save_frame(path_save: os.path, option: str, saving_dataframe: pd.DataFrame) 
     saving_dataframe.to_csv(save_path_df)
     return
 
-
+@wrapper_print
 def main_split_merge_detection(clr1_filename, clr2_filename, resolution, binsize,
                                path_tad_1: os.path, path_tad_2: os.path, path_save: os.path = './'):
     clr_1 = cooler.Cooler(f'{clr1_filename}::resolutions/{resolution}')
     clr_2 = cooler.Cooler(f'{clr2_filename}::resolutions/{resolution}')
+    split_merge_episodes = []
     for option in ['split', 'merge']:
         tad_split_table = pd.DataFrame()
         tad1, tad2 = create_tads_tables(path_tad_1, path_tad_2)
@@ -235,6 +237,7 @@ def main_split_merge_detection(clr1_filename, clr2_filename, resolution, binsize
 
         final_table = choose_region(tad_split_table, clr_1, clr_2, binsize)
         save_frame(path_save, option, final_table)
+        split_merge_episodes.append(len(final_table.drop_duplicates()))
     # print(tad_split_table)
-    return
+    return tuple(split_merge_episodes)
 
