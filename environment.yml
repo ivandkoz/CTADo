@@ -86,4 +86,3 @@ dependencies:
     - toolz==0.12.1
     - urllib3==2.2.1
     - zipp==3.18.1
-prefix: /home/ivandkoz/miniforge3/envs/test_tad
