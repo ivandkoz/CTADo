@@ -29,11 +29,12 @@ if __name__ == "__main__":
     parser.add_argument('-df', '--result_dataframe_name', default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrixes')
     parser.add_argument('-s', '--save', type=bool, choices=(True, False), default=False, help='True if all result files should be saved, else False')
     parser.add_argument('-sd', '--save_directory', type=str, default='./', help='The path to the save directory')
-    parser.add_argument('-lg', '--logging', type=bool, default='False', help='Enables logging')
+    parser.add_argument('-lg', '--logging', type=bool, choices=(True, False), default=False, help='Enables logging')
     args = parser.parse_args()
 
+
     logger = logging.getLogger()
-    logger.enabled = False
+    logger.disabled = not args.logging
 
     if not os.path.exists(args.save_directory):
         os.makedirs(args.save_directory)
