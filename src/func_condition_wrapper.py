@@ -1,14 +1,11 @@
 import sys
 import traceback
-import logging
 
 FUNC_NAMES = {'count_tads_change_intensity': ['Searching changes in the intensity of TADs...',
                                               'The number of TADs with a changed intensity: '],
               'main_split_merge_detection': ['Searching splits and merges in TADs...',
                                              'The number of splits|merges: ']
               }
-
-
 def wrapper_print(func):
     def wrapper(*args, **kwargs):
         sys.stdout.write(f'{FUNC_NAMES[func.__name__][0]}\n'); sys.stdout.flush()
