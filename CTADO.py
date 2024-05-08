@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import logging
 from src.calculate_intensity_change import count_tads_change_intensity
@@ -44,6 +45,8 @@ if __name__ == "__main__":
                                f'{args.save_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
                                f'{args.save_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
                                args.save_directory)
+    sys.stdout.write(f'Visualising...'); sys.stdout.flush()
     for file in [INTENSITY, SPLIT, MERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}', type_of_change, args.save_directory)
+    sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.save_directory)}'); sys.stdout.flush()
