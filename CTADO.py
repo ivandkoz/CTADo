@@ -5,10 +5,13 @@ import logging
 from src.calculate_intensity_change import count_tads_change_intensity
 from src.tads_plot import visualisation
 from src.split_merge_detect import main_split_merge_detection
+from src.tads_find_overlaps import main_flex_split_merge
 
 INTENSITY = 'intensity_change_result.csv'
 SPLIT = 'split_coords.csv'
 MERGE = 'merge_coords.csv'
+FSPLIT = 'flex_split.csv'
+FMERGE = 'flex_merge.csv'
 
 
 if __name__ == "__main__":
@@ -49,8 +52,11 @@ if __name__ == "__main__":
                                f'{args.save_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
                                f'{args.save_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
                                args.save_directory)
+    main_flex_split_merge(f'{args.save_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
+                          f'{args.save_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
+                          args.save_directory)
     sys.stdout.write(f'Visualising...\n'); sys.stdout.flush()
-    for file in [INTENSITY, SPLIT, MERGE]:
+    for file in [INTENSITY, SPLIT, MERGE, FSPLIT, FMERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name, args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}', type_of_change, args.save_directory)
     sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.save_directory)}\n'); sys.stdout.flush()
