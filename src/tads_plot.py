@@ -95,7 +95,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         region = (i[0], i[1], i[2])
         im = ax.matshow(
             clr_1.matrix(balance=False).fetch(region),
-            vmax=800,
+            vmax=600,
             extent=(start, end, end, start), cmap='gist_heat_r'
         );
 
@@ -136,7 +136,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         region = (i[0], i[1], i[2])
         im = ax.matshow(
             clr_2.matrix(balance=False).fetch(region),
-            vmax=800,
+            vmax=600,
             extent=(start, end, end, start), cmap='gist_heat_r'
         );
 
