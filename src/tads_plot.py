@@ -42,7 +42,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
     rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
 
     if change == 'intensity':
-        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(15)  # .dropna().tail(5)  # .head(5)
+        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)  # .head(5)
         most_diff_tads = []
         binsize = binsize * 1.5
         for index, row in df.iterrows():
