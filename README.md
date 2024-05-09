@@ -29,6 +29,8 @@ We introduce a method based on the given TAD boundaries and use it to identify f
 <br />
 
 In summary, CTADo is providing analyses from boundary calling to visualization.
+
+**CTADO** documentation is available on the GitHub [wiki page](https://github.com/ivandkoz/differential-computing-TADs/wiki).
 <br />
 
 ### Installation
