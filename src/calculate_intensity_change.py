@@ -101,7 +101,7 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     return df
 
 
-def create_clr_data(clr_filename, resolution, num_cpus):
+def create_clr_data(clr_filename, resolution, threads):
     clr = cooler.Cooler(f'{clr_filename}::resolutions/{resolution}')
 
     chroms_view = pd.DataFrame(data={
@@ -110,7 +110,7 @@ def create_clr_data(clr_filename, resolution, num_cpus):
         'end': clr.chromsizes.values,
         'name': clr.chromsizes.index
     })
-    expected = cooltools.expected_cis(clr, view_df=chroms_view, nproc=num_cpus, chunksize=10000000)
+    expected = cooltools.expected_cis(clr, view_df=chroms_view, nproc=threads, chunksize=10000000)
     return clr, expected, chroms_view
 
 
