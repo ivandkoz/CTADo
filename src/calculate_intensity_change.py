@@ -12,25 +12,23 @@ from src.func_condition_wrapper import wrapper_print
 warnings.filterwarnings(action='ignore', message='Mean of empty slice')
 pd.options.mode.chained_assignment = None
 
-def get_boundaries(file_name, resolution, window, save=False):
+def get_boundaries(file_name, resolution, window):
     '''
     Sets the insulation_table for the given mcool file and window size.
 
     :param file_name: name of mcool/cool file
     :param resolution: resolution of mcool/cool file
     :param window: the size of the sliding diamond window used to calculate the insulation score
-    :save: if True saves file, else not
     :return: dataframe with all boundaries
     '''
     clr = cooler.Cooler(f'{file_name}::resolutions/{resolution}')
     boundaries_df = insulation(clr, [window], verbose=True)
 
-    if save:
-        boundaries_df.to_csv(f'{file_name}_{window}_boundaries.csv')
+    boundaries_df.to_csv(f'{file_name}_{window}_boundaries.csv')
     return boundaries_df
 
 
-def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save=False, save_directory='./'):
+def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save_directory='./'):
     '''
     Creates a dataframe containing the chromosome name and tad boundaries on provided resolution.
     If boundaries_df_name is missing, a dataframe is created using get_boundaries function
@@ -39,7 +37,6 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
     :param resolution: resolution of mcool/cool file
     :param window: the size of the sliding diamond window used to calculate the insulation score
     :param boundaries_df_name: name of dataframe with all boundaries
-    :param save: if True saves file, else not
     :return: dataframe with TADs
     '''
     df = pd.read_csv(f'{boundaries_df_name}', index_col=0)
@@ -66,7 +63,7 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
 
 
 def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name,
-                   result_df_1_name=None, result_df_2_name=None, save=False, save_directory='./'):
+                   result_df_1_name=None, result_df_2_name=None, save_directory='./'):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -79,7 +76,6 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     :param binsize: bin size, bp
     :param clr1_boundaries_name: dataframe name with chrom, start & end of TADs boundary
     :param clr2_boundaries_name: dataframe name with chrom, start & end of TADs boundary
-    :param save: if True saves file, else not
     :return: dataframe with boundaries intersecting of two mcool/cool files s TADs
     '''
 
@@ -87,10 +83,10 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     if not result_df_1_name or not result_df_2_name:
         result_1 = creation_tads_dataframe(filename=clr1_filename, resolution=resolution,
                                            window=window, boundaries_df_name=clr1_boundaries_name,
-                                           save=save, save_directory=save_directory)
+                                           save_directory=save_directory)
         result_2 = creation_tads_dataframe(filename=clr2_filename, resolution=resolution,
                                            window=window, boundaries_df_name=clr2_boundaries_name,
-                                           save=save, save_directory=save_directory)
+                                           save_directory=save_directory)
     else:
         result_1 = pd.read_csv(f'{result_df_1_name}', index_col=0)
         result_2 = pd.read_csv(f'{result_df_2_name}', index_col=0)
@@ -158,7 +154,7 @@ def count_pvalue(result_df):
 def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
                                 clr1_boundaries_name, clr2_boundaries_name,
                                 result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
-                                save=False, save_directory='./', threads=1):
+                                save_directory='./', threads=1):
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -175,14 +171,13 @@ def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window
                                  boundaries in chrom, start, end format or cooler insulation table
     :param result_df_1_name: dataframe name with chrom, start & end of TADs
     :param result_df_2_name: dataframe name with chrom, start & end of TADs
-    :param save: if True saves file, else not
     :return: an output dataframe with information of two mcool/cool files s TADs that changed their intensity in format:
             chrom, start_1, end_1, start_2, end_2, mean_intensity_1, mean_intensity_2, log2_intensity, pvalue
     '''
     if not result_dataframe_name:
         result_dataframe = intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize,
                                           clr1_boundaries_name, clr2_boundaries_name, result_df_1_name,
-                                          result_df_2_name, save=save, save_directory=save_directory)
+                                          result_df_2_name, save_directory=save_directory)
     else:
         result_dataframe = pd.read_csv(f'{result_dataframe_name}', index_col=0)
 
