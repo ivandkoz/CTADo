@@ -37,7 +37,11 @@ To get the tool CTADo clone the git repository:
 ```
 git clone git@github.com:ivandkoz/differential-computing-TADs.git && cd differential-computing-TADs
 ```
-
+To create conda enviroment using enviroment.yml file:
+```
+conda env create --name ctado -f environment.yml
+conda activate ctado
+```
 
 ### Usage
 
@@ -64,11 +68,11 @@ python CTADO.py -h
 ```
 
 ```bash
-usage: Differential analysis of interacting domains between two contact matrixes
-       [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME] [-df RESULT_DATAFRAME_NAME]
-       [-s {True,False}]
-       clr1_filename clr2_filename resolution window flank binsize clr1_boundaries_name
-       clr2_boundaries_name
+usage: Differential analysis of interacting domains between two contact matrixes [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME]
+                                                                                 [-df RESULT_DATAFRAME_NAME] [-sd SAVE_DIRECTORY]
+                                                                                 [-lg {True,False}] [-t THREADS]
+                                                                                 clr1_filename clr2_filename resolution window flank
+                                                                                 binsize clr1_boundaries_name clr2_boundaries_name
 
 This tool is needed to find four types of changes in TADs between two contact matrixes
 
@@ -79,25 +83,25 @@ positional arguments:
   window                Size of the sliding diamond window
   flank                 Flank size in bp
   binsize               Bin size in bp
-  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with
-                        TADs boundaries in chrom, start, end format or cooler insulation
-                        table
-  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name
-                        with TADs boundaries in chrom, start, end format or cooler
-                        insulation table
+  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
+                        cooler insulation table
+  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
+                        cooler insulation table
 
 options:
   -h, --help            show this help message and exit
   -r1 RESULT_DF_1_NAME, --result_df_1_name RESULT_DF_1_NAME
-                        The first contact matrix dataframe name with chrom, start & end of
-                        TADs
+                        The first contact matrix dataframe name with chrom, start & end of TADs
   -r2 RESULT_DF_2_NAME, --result_df_2_name RESULT_DF_2_NAME
-                        The second contact matrix dataframe name with chrome, start & end
-                        of TADs
+                        The second contact matrix dataframe name with chrome, start & end of TADs
   -df RESULT_DATAFRAME_NAME, --result_dataframe_name RESULT_DATAFRAME_NAME
                         Dataframe name with intersecting TADs of two contact matrixes
-  -s {True,False}, --save {True,False}
-                        True if all result files should be saved, else False
+  -sd SAVE_DIRECTORY, --save_directory SAVE_DIRECTORY
+                        The path to the save directory
+  -lg {True,False}, --logging {True,False}
+                        Enables logging
+  -t THREADS, --threads THREADS
+                        Parameter for specifying the number of threads
 
 Good luck! (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭
 ```
