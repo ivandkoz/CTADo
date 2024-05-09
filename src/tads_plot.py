@@ -39,14 +39,35 @@ def plot_tads(tads_annot, boundaries_df_clr_filename, window):
 # change: intensity or split/merge
 def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename,
                   resolution, binsize, window, rslt_df_name, change, save_directory):
-
     rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
-    df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)
-    most_diff_tads = []
-    binsize = binsize * 1.5
-    for index, row in df.iterrows():
-        most_diff_tads.append([row['chrom'],  max(row['start_1'], row['start_2']) - binsize * 5,
-                               max(row['end_1'], row['end_2']) + binsize * 5])
+
+    if change == 'intensity':
+        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(15)  # .dropna().tail(5)  # .head(5)
+        most_diff_tads = []
+        binsize = binsize * 1.5
+        for index, row in df.iterrows():
+            most_diff_tads.append([row['chrom'],  max(row['start_1'], row['start_2']) - binsize * 5,
+                                   max(row['end_1'], row['end_2']) + binsize * 5])
+
+    else:
+        df = rslt_df.sort_values('pvalue', key=abs, ascending=True)  # .dropna().tail(5)
+        if change == 'split':
+            df = df.drop_duplicates(subset=['chrom', 'start_1', 'end_1'], keep='first')
+        elif change == 'merge':
+            df = df.drop_duplicates(subset=['chrom', 'start_2', 'end_2'], keep='first')
+
+        df = df.head(5)
+        most_diff_tads = []
+        binsize = binsize * 1.5
+        if change == 'merge':
+            for index, row in df.iterrows():
+                most_diff_tads.append([row['chrom'],  row['start_2'] - binsize * 5,
+                                       row['end_2'] + binsize * 5])
+        elif change == 'split':
+            for index, row in df.iterrows():
+                most_diff_tads.append([row['chrom'],  row['start_1'] - binsize * 5,
+                                       row['end_1'] + binsize * 5])
+
     tads_annot = pd.DataFrame(most_diff_tads, columns=['Chromosome', 'Start', 'End'])
     tads_annot['Start'] = tads_annot['Start'].apply(lambda x: x + 5 * binsize)
     tads_annot['End'] = tads_annot['End'].apply(lambda x: x - 5 * binsize)
@@ -83,7 +104,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         else:  # i[0] != 'chrX' or i[0] != 'chrY':
             chrom = re.findall("\d+", i[0])[0]
 
-        tad_annot = tad_annots[tad_annots['Chromosome']==str(chrom)][tad_annots['Gene_name'].str.contains('uncharacterized|RNA|miR|pseudogene')==False][tad_annots['Symbol'].str.contains('LOC')==False] #[tdf['Orientation']=='plus']
+        tad_annot = tad_annots[tad_annots['Chromosome']==str(chrom)][tad_annots['Gene_name'].str.contains('uncharacterized|RNA|miR|pseudogene')==False][tad_annots['Symbol'].str.contains('LOC')==False] 
         tad_annot = tad_annot[tad_annot['Start'] >= i[1] - binsize][tad_annot['End'] <= i[2] + binsize]
 
         f, axs = plt.subplots(
