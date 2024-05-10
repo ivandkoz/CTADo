@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 
 from src.calculate_intensity_change import count_tads_change_intensity
@@ -59,6 +60,8 @@ def parse() -> os.path:
     parser.add_argument('-t', '--threads', type=int,
                         default=1, help='Parameter for specifying the number of threads')
     args = parser.parse_args()
+    logger = logging.getLogger()
+    logger.disabled = not args.logging
 
     if not os.path.exists(args.output_directory):
         os.makedirs(args.output_directory)
