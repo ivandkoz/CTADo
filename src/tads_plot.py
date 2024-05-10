@@ -130,6 +130,9 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
 
         clr1_tads = plot_tads(tads_annot[tads_annot['Chromosome']==str(chrom)][tads_annot['Start'] >= i[1] - binsize][tads_annot['End'] <= i[2] + binsize],
                               boundaries_df_clr1_filename, window)
+
+        clr1_tads = clr1_tads.loc[clr1_tads['Start_x'] == tads_annot.iloc[count_top - 1]['Start']]
+      
         tad_bgn = i[1]
         for index, row in clr1_tads.iterrows():
             tad_end = (row[3] + row[4])/2
@@ -171,6 +174,9 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
 
         clr2_tads = plot_tads(tads_annot[tads_annot['Chromosome']==str(chrom)][tads_annot['Start'] >= i[1] - binsize][tads_annot['End'] <= i[2] + binsize],
                               boundaries_df_clr2_filename, window)
+
+        clr2_tads = clr2_tads.loc[clr2_tads['Start_x'] == tads_annot.iloc[count_top - 1]['Start']]
+      
         tad_bgn = i[1]
         for index, row in clr2_tads.iterrows():
             tad_end = (row[3] + row[4])/2
