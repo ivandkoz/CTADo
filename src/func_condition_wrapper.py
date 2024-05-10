@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 import traceback
 import typing
@@ -39,3 +40,10 @@ def visualise_wrapper(func: typing.Callable) -> typing.Callable:
     wrapper_first.used = False
     return wrapper_first
 
+
+def parser_wrapper(func: typing.Callable) -> typing.Callable:
+    def wrapper_2(*args, **kwargs) -> typing.NoReturn:
+        output_directory = func(*args, **kwargs)
+        sys.stderr.write(f'CTADO completed successfully!\n')
+        sys.stdout.write(f'Output location:\n{output_directory}')
+    return wrapper_2
