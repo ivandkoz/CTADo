@@ -127,7 +127,7 @@ or
 python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True -r1 4DNFIL6BHWZL_rs.mcool_400000_result_df.csv -r2 4DNFIHXCPUAP_rs.mcool_400000_result_df.csv -df intensity_change_result.csv
 ```
 
-Additionaly, you can see the whole example in ![GitHub Wiki](https://github.com/ivandkoz/differential-computing-TADs/wiki).
+Additionaly, you can see the whole example in [GitHub Wiki](https://github.com/ivandkoz/differential-computing-TADs/wiki/3.-Example).
 
 <br />
 Example of graphic:
