@@ -26,3 +26,16 @@ def wrapper_print(func: typing.Callable) -> typing.Callable:
             sys.stderr.write(traceback.format_exc())
 
     return wrapper
+
+
+def visualise_wrapper(func: typing.Callable) -> typing.Callable:
+    def wrapper_first(*args, **kwargs) -> typing.NoReturn:
+        if not wrapper_first.used:
+            wrapper_first.used = True
+            sys.stderr.write(f'Visualising...\r')
+            sys.stderr.flush()
+        func(*args, **kwargs)
+
+    wrapper_first.used = False
+    return wrapper_first
+
