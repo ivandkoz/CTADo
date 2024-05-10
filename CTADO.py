@@ -1,5 +1,4 @@
 import argparse
-import csv
 import logging
 import os
 
@@ -13,10 +12,9 @@ SPLIT = 'split_coords.csv'
 MERGE = 'merge_coords.csv'
 
 
-def counting_tads(file:os.path) -> int:
+def counting_tads(file: os.path) -> int:
     with open(file, 'r') as fp:
-        csv_reader = csv.reader(fp)
-        tads = sum(1 for row in csv_reader)
+        tads = sum(1 for row in fp)
         return tads-1
 
 
