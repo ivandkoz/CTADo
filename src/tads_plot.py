@@ -5,7 +5,7 @@ import cooler
 import os
 import pyranges as pr
 import re
-
+from src.func_condition_wrapper import visualise_wrapper
 from matplotlib.ticker import EngFormatter
 import matplotlib.pyplot as plt
 
@@ -43,6 +43,7 @@ def calculate_num_of_charts(num_of_charts: int, rslt_df: pd.DataFrame):
     return num_of_charts
 
 
+@visualise_wrapper
 def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename,
                   resolution, binsize, window, rslt_df_name, change, save_directory, num_of_charts):
     rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
