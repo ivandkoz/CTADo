@@ -1,13 +1,10 @@
-import os
-import sys
 import argparse
-import logging
-import typing
-from src.calculate_intensity_change import count_tads_change_intensity
-from src.tads_plot import visualisation
-from src.split_merge_detect import main_split_merge_detection
-from src.func_condition_wrapper import parser_wrapper
+import os
 
+from src.calculate_intensity_change import count_tads_change_intensity
+from src.func_condition_wrapper import parser_wrapper
+from src.split_merge_detect import main_split_merge_detection
+from src.tads_plot import visualisation
 
 INTENSITY = 'intensity_change_result.csv'
 SPLIT = 'split_coords.csv'
@@ -56,9 +53,6 @@ def parse() -> os.path:
     parser.add_argument('-t', '--threads', type=int,
                         default=1, help='Parameter for specifying the number of threads')
     args = parser.parse_args()
-
-    logger = logging.getLogger()
-    logger.disabled = not args.logging
 
     if not os.path.exists(args.output_directory):
         os.makedirs(args.output_directory)
