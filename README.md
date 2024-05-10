@@ -2,7 +2,8 @@
 **Comparison tool for Topologically Associated Domains**
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./img/CTADOw.png">
-  <source media="(prefers-color-scheme: light)" srcset="./img/CTADOw.png">
+  <source media="(prefers-color-scheme: light)" srcset="./img/CTADO.png">
+  <img alt="CTADO logo" src="./img/CTADO.png">
 </picture>
 
 *TADs* are smaller structural units of chromosomes that are defined as regions whose DNA sequences preferentially contact each other. <br />
