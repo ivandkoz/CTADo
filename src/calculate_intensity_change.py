@@ -151,9 +151,10 @@ def count_pvalue(result_df: pd.DataFrame) -> pd.DataFrame:
 
 
 @wrapper_print
-def count_tads_change_intensity(clr1_filename: str, clr2_filename: str, resolution: int, window: int, flank: int, binsize int,
-                                clr1_boundaries_name: str, clr2_boundaries_name: str,
-                                result_df_1_name: str = None, result_df_2_name: str = None, result_dataframe_name: str = None,
+def count_tads_change_intensity(clr1_filename: str, clr2_filename: str, resolution: int, window: int, flank: int,
+                                binsize: int, clr1_boundaries_name: str, clr2_boundaries_name: str,
+                                result_df_1_name: str = None, result_df_2_name: str = None,
+                                result_dataframe_name: str = None,
                                 save_directory: str = './', threads: int = 1) -> int:
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
