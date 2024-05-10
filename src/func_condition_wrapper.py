@@ -44,7 +44,7 @@ def parser_wrapper(func: typing.Callable) -> typing.Callable:
         output_directory, map1_tad_count, map2_tad_count = func(*args, **kwargs)
         sys.stderr.write(f'CTADO completed successfully!\n')
         sys.stderr.flush()
-        sys.stdout.write(f'Total TADs count on first|second map: {(map1_tad_count, map2_tad_count)}')
+        sys.stdout.write(f'Total TADs count on first|second map: {(map1_tad_count, map2_tad_count)}\n')
         sys.stdout.flush()
         sys.stdout.write(f'Output location:\n{output_directory}')
     return wrapper_2
