@@ -1,4 +1,3 @@
-import logging
 import sys
 import time
 import traceback
@@ -25,7 +24,6 @@ def wrapper_print(func: typing.Callable) -> typing.Callable:
             time.sleep(2)
         except Exception as e:
             sys.stderr.write(traceback.format_exc())
-
     return wrapper
 
 
@@ -43,9 +41,10 @@ def visualise_wrapper(func: typing.Callable) -> typing.Callable:
 
 def parser_wrapper(func: typing.Callable) -> typing.Callable:
     def wrapper_2(*args, **kwargs) -> typing.NoReturn:
-        logger = logging.getLogger()
-        logger.disabled = not args.logging
-        output_directory = func(*args, **kwargs)
+        output_directory, map1_tad_count, map2_tad_count = func(*args, **kwargs)
         sys.stderr.write(f'CTADO completed successfully!\n')
+        sys.stderr.flush()
+        sys.stdout.write(f'Total TADs count on first|second map: {(map1_tad_count, map2_tad_count)}')
+        sys.stdout.flush()
         sys.stdout.write(f'Output location:\n{output_directory}')
     return wrapper_2
