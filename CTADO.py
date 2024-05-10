@@ -80,8 +80,8 @@ def parse() -> os.path:
                       args.resolution, args.binsize, args.window, f'{args.output_directory}/{file}',
                       type_of_change, args.output_directory, args.number_of_charts)
     output_dir = os.path.abspath(args.output_directory)
-    map1_tad_count = counting_tads(args.clr1_boundaries_name)
-    map2_tad_count = counting_tads(args.clr2_boundaries_name)
+    map1_tad_count = counting_tads(f'{args.output_directory}/{args.clr1_filename}_{args.window}_result_df.csv',)
+    map2_tad_count = counting_tads(f'{args.output_directory}/{args.clr2_filename}_{args.window}_result_df.csv',)
     return output_dir, map1_tad_count, map2_tad_count
 
 
