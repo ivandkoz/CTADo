@@ -103,50 +103,33 @@ def find_coords(position: float, coords: list) -> int:
             return i
 
 
-def calculate_pvalue(square_mean: float, hill_mean: float, square_var: float, hill_var: float) -> float:
-    sample_size = 1000
-    square = np.random.normal(square_mean, np.sqrt(square_var), size=sample_size)
-    hill = np.random.normal(hill_mean, np.sqrt(hill_var), size=sample_size)
-    stat, pvalue = mannwhitneyu(square, hill)
+def calculate_pvalue(square_intensity: np.ndarray, hill_intensity: np.ndarray) -> float:
+    stat, pvalue = mannwhitneyu(square_intensity, hill_intensity, method='asymptotic')
     return pvalue
 
 
 def calculate_intensity(diff_matrix: pd.DataFrame, small_tads_coords: list, coords: list) -> float:
     square_intensity = []
     hill_intensity = []
-    square_intensity_var = []
-    hill_intensity_var = []
     for tad_id, small_tad in enumerate(small_tads_coords):
         if tad_id == (len(small_tads_coords) - 1):
-            hill_intensity.append(
+            hill_intensity.extend(
                 diff_matrix.iloc[start_2_corrected:end_2_corrected + 1,
-                                 start_2_corrected:end_2_corrected + 1].mean().mean())
-            hill_intensity_var.append(
-                diff_matrix.iloc[start_2_corrected:end_2_corrected + 1,
-                                 start_2_corrected:end_2_corrected + 1].var().var())
+                                 start_2_corrected:end_2_corrected + 1].mean().to_numpy())
             continue
         start1, end1 = small_tad[0], small_tad[1]
         start2, end2 = small_tads_coords[tad_id + 1][0], small_tads_coords[tad_id + 1][1]
         start_1_corrected, end_1_corrected = find_coords(start1, coords), find_coords(end1, coords)
         start_2_corrected, end_2_corrected = find_coords(start2, coords), find_coords(end2, coords)
 
-        square_intensity.append(
+        square_intensity.extend(
             diff_matrix.iloc[start_1_corrected:end_1_corrected,
-                             start_2_corrected + 1:end_2_corrected + 1].mean().mean())
-        square_intensity_var.append(
-            diff_matrix.iloc[start_1_corrected:end_1_corrected, start_2_corrected + 1:end_2_corrected + 1].var().var())
-        hill_intensity.append(
+                             start_2_corrected + 1:end_2_corrected + 1].mean().to_numpy())
+        hill_intensity.extend(
             diff_matrix.iloc[start_1_corrected:end_1_corrected + 1,
-                             start_1_corrected:end_1_corrected + 1].mean().mean())
-        hill_intensity_var.append(
-            diff_matrix.iloc[start_1_corrected:end_1_corrected + 1, start_1_corrected:end_1_corrected + 1].var().var())
+                             start_1_corrected:end_1_corrected + 1].mean().to_numpy())
 
-    square_mean = np.mean(square_intensity)
-    square_var = np.mean(square_intensity_var)
-    hill_mean = np.mean(hill_intensity)
-    hill_var = np.mean(hill_intensity_var)
-    pvalue = calculate_pvalue(square_mean, hill_mean, square_var, hill_var)
-    return pvalue
+    return calculate_pvalue(square_intensity, hill_intensity)
 
 
 def create_diff_matrix(main_tad_coords: list, small_tads_coords: list,
