@@ -44,6 +44,9 @@ if __name__ == "__main__":
                         default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrices')
     parser.add_argument('-od', '--output_directory', type=str,
                         default='./', help='The path to the save directory')
+    parser.add_argument('-nc', '--number_of_charts', type=int, choices=(-1, int),
+                        default=5, help='The number of output charts for each type of change.\
+                         If the specified number is greater than the number of events, then all of them will be output')
     parser.add_argument('-lg', '--logging', type=bool, choices=(True, False),
                         default=False, help='Enables logging')
     parser.add_argument('-t', '--threads', type=int,
@@ -70,6 +73,6 @@ if __name__ == "__main__":
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name,
                       args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}',
-                      type_of_change, args.save_directory)
+                      type_of_change, args.save_directory, args.number_of_charts)
     sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.save_directory)}\n')
     sys.stdout.flush()
