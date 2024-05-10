@@ -37,7 +37,7 @@ In summary, CTADo is providing analyses from boundary calling to visualization.
 To get the tool CTADo clone the git repository:
 
 ```
-git clone git@github.com:ivandkoz/differential-computing-TADs.git && cd differential-computing-TADs
+git@github.com:ivandkoz/CTADo.git && cd CTADo
 ```
 To create conda enviroment using enviroment.yml file:
 ```
