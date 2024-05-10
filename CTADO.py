@@ -2,9 +2,11 @@ import os
 import sys
 import argparse
 import logging
+import typing
 from src.calculate_intensity_change import count_tads_change_intensity
 from src.tads_plot import visualisation
 from src.split_merge_detect import main_split_merge_detection
+from src.func_condition_wrapper import parser_wrapper
 
 
 INTENSITY = 'intensity_change_result.csv'
@@ -12,13 +14,14 @@ SPLIT = 'split_coords.csv'
 MERGE = 'merge_coords.csv'
 
 
-if __name__ == "__main__":
+@parser_wrapper
+def parse() -> os.path:
     parser = argparse.ArgumentParser(
-                      prog='Differential analysis of interacting domains between two contact matrices',
-                      description='This tool is needed to find four types of changes in TADs\
-                       between two contact matrices',
-                      formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-                      epilog='Good luck!   (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭')
+        prog='Differential analysis of interacting domains between two contact matrices',
+        description='This tool is needed to find four types of changes in TADs\
+                           between two contact matrices',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog='Good luck!   (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭')
 
     parser.add_argument('clr1_filename', type=str,
                         help='Name of first contact matrix in mcool/cool format')
@@ -30,24 +33,24 @@ if __name__ == "__main__":
     parser.add_argument('binsize', type=int, help='Bin size in bp')
     parser.add_argument('clr1_boundaries_name', type=str,
                         help='The first contact matrix boundaries argument,\
-                         a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
+                             a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
     parser.add_argument('clr2_boundaries_name', type=str,
                         help='The second contact matrix boundaries argument,\
-                         a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
+                             a dataframe name with TADs boundaries in chrom, start, end format or cooler insulation table')
     parser.add_argument('-r1', '--result_df_1_name',
                         default=None, type=str, help='The first contact matrix dataframe name with chrom,\
-                         start & end of TADs')
+                             start & end of TADs')
     parser.add_argument('-r2', '--result_df_2_name',
                         default=None, type=str, help='The second contact matrix dataframe name with chrome,\
-                         start & end of TADs')
+                             start & end of TADs')
     parser.add_argument('-df', '--result_dataframe_name',
                         default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrices')
     parser.add_argument('-od', '--output_directory', type=str,
                         default=f'{os.getcwd()}', help='The path to the save directory')
     parser.add_argument('-nc', '--number_of_charts', type=int,
                         default=5, help='The number of output charts for each type of change.\
-                         If the specified number is greater than the number of events, then all of them will be output.\
-                         If number is -1 than all of them will be output.')
+                             If the specified number is greater than the number of events, then all of them will be output.\
+                             If number is -1 than all of them will be output.')
     parser.add_argument('-lg', '--logging', type=bool, choices=(True, False),
                         default=False, help='Enables logging')
     parser.add_argument('-t', '--threads', type=int,
@@ -68,13 +71,13 @@ if __name__ == "__main__":
                                f'{args.output_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
                                f'{args.output_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
                                args.output_directory)
-    sys.stderr.write(f'Visualising...\r')
-    sys.stderr.flush()
     for file in [INTENSITY, SPLIT, MERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name,
                       args.resolution, args.binsize, args.window, f'{args.output_directory}/{file}',
                       type_of_change, args.output_directory, args.number_of_charts)
-    sys.stderr.write(f'CTADO completed successfully!\n')
-    sys.stdout.write(f'Output location:\n{os.path.abspath(args.output_directory)}\n')
-    # sys.stdout.flush()
+    return os.path.abspath(args.output_directory)
+
+
+if __name__ == "__main__":
+    parse()
