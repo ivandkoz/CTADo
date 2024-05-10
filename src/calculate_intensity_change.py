@@ -12,7 +12,7 @@ from src.func_condition_wrapper import wrapper_print
 warnings.filterwarnings(action='ignore', message='Mean of empty slice')
 pd.options.mode.chained_assignment = None
 
-def get_boundaries(file_name, resolution, window):
+def get_boundaries(file_name: str, resolution: int, window: int) -> pd.DataFrame:
     '''
     Sets the insulation_table for the given mcool file and window size.
 
@@ -28,7 +28,7 @@ def get_boundaries(file_name, resolution, window):
     return boundaries_df
 
 
-def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, save_directory='./'):
+def creation_tads_dataframe(filename: str, resolution: int, window: int, boundaries_df_name: str, save_directory: str = './') -> pd.DataFrame:
     '''
     Creates a dataframe containing the chromosome name and tad boundaries on provided resolution.
     If boundaries_df_name is missing, a dataframe is created using get_boundaries function
@@ -62,8 +62,8 @@ def creation_tads_dataframe(filename, resolution, window, boundaries_df_name, sa
     return result_dataframe
 
 
-def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name,
-                   result_df_1_name=None, result_df_2_name=None, save_directory='./'):
+def intersect_tads(clr1_filename: str, clr2_filename: str, resolution: int, window: int, binsize: int, clr1_boundaries_name: str, clr2_boundaries_name: str,
+                   result_df_1_name: str = None, result_df_2_name: str = None, save_directory: str = './') -> pd.DataFrame:
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
@@ -101,7 +101,7 @@ def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, cl
     return df
 
 
-def create_clr_data(clr_filename, resolution, threads):
+def create_clr_data(clr_filename: str, resolution: int, threads: int) -> tuple[cooler.Cooler, cooler.Cooler, pd.DataFrame]:
     clr = cooler.Cooler(f'{clr_filename}::resolutions/{resolution}')
 
     chroms_view = pd.DataFrame(data={
@@ -114,7 +114,7 @@ def create_clr_data(clr_filename, resolution, threads):
     return clr, expected, chroms_view
 
 
-def create_pileup_df(result_dataframe):
+def create_pileup_df(result_dataframe: pd.DataFrame) -> pd.DataFrame:
     pileup_df = pd.DataFrame(columns=['chrom', 'start', 'end'])
     pileup_df['chrom'] = result_dataframe['chrom']
     pileup_df['start'] = result_dataframe[['start_1', 'start_2']].min(axis=1)
@@ -122,7 +122,7 @@ def create_pileup_df(result_dataframe):
     return pileup_df
 
 
-def add_mean_log2_columns(matrix1, matrix2, result_dataframe):
+def add_mean_log2_columns(matrix1: np.ndarray, matrix2: np.ndarray, result_dataframe: pd.DataFrame) -> pd.DataFrame:
     result_dataframe['mean_intensity_1'] = [np.nanmean(element) for element in matrix1]
     result_dataframe['mean_intensity_2'] = [np.nanmean(element) for element in matrix2]
     result_dataframe['log2_intensity'] = np.log2(
@@ -132,13 +132,13 @@ def add_mean_log2_columns(matrix1, matrix2, result_dataframe):
     return result_dataframe
 
 
-def get_pval(x, mean_lmi1, std_lmi1):
+def get_pval(x: float, mean_lmi1: float, std_lmi1: float) -> float:
     z_score = (x - mean_lmi1) / std_lmi1
     p_value = 1 - stats.norm.cdf(z_score)
     return p_value
 
 
-def count_pvalue(result_df):
+def count_pvalue(result_df: pd.DataFrame) -> pd.DataFrame:
     """
     Calculates p-value for changed intensity TADs
     """
@@ -151,10 +151,10 @@ def count_pvalue(result_df):
 
 
 @wrapper_print
-def count_tads_change_intensity(clr1_filename, clr2_filename, resolution, window, flank, binsize,
-                                clr1_boundaries_name, clr2_boundaries_name,
-                                result_df_1_name=None, result_df_2_name=None, result_dataframe_name=None,
-                                save_directory='./', threads=1):
+def count_tads_change_intensity(clr1_filename: str, clr2_filename: str, resolution: int, window: int, flank: int, binsize int,
+                                clr1_boundaries_name: str, clr2_boundaries_name: str,
+                                result_df_1_name: str = None, result_df_2_name: str = None, result_dataframe_name: str = None,
+                                save_directory: str = './', threads: int = 1) -> int:
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
