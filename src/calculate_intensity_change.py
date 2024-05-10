@@ -62,8 +62,8 @@ def creation_tads_dataframe(filename: str, resolution: int, window: int, boundar
     return result_dataframe
 
 
-def intersect_tads(clr1_filename, clr2_filename, resolution, window, binsize, clr1_boundaries_name, clr2_boundaries_name,
-                   result_df_1_name=None, result_df_2_name=None, save_directory='./'):
+def intersect_tads(clr1_filename: str, clr2_filename: str, resolution: int, window: int, binsize: int, clr1_boundaries_name: str, clr2_boundaries_name: str,
+                   result_df_1_name: str = None, result_df_2_name: str = None, save_directory: str = './') -> pd.DataFrame:
     '''
     Creating a table with boundaries intersecting by no more than 1.5 bins from mcool/cool source file or
     from two dataframe with chrom, start & end of TADs boundaries and average intensity columns (optional).
