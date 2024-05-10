@@ -36,13 +36,19 @@ def plot_tads(tads_annot, boundaries_df_clr_filename, window):
     return merged_clr
 
 
-# change: intensity or split/merge
-def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename,
-                  resolution, binsize, window, rslt_df_name, change, save_directory):
-    rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
+def calculate_num_of_charts(num_of_charts: int, rslt_df: pd.DataFrame):
+    max_number = rslt_df.shape[0]
+    if num_of_charts > max_number or num_of_charts == -1:
+        return max_number
+    return num_of_charts
 
+
+def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundaries_df_clr2_filename,
+                  resolution, binsize, window, rslt_df_name, change, save_directory, num_of_charts):
+    rslt_df = pd.read_csv(f'{rslt_df_name}', index_col=0)
+    num_of_charts = calculate_num_of_charts(num_of_charts, rslt_df)
     if change == 'intensity':
-        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(5)  # .dropna().tail(5)  # .head(5)
+        df = rslt_df.sort_values('pvalue', key=abs, ascending=True).head(num_of_charts)  # .dropna().tail(5)  # .head(5)
         most_diff_tads = []
         binsize = binsize * 1.5
         for index, row in df.iterrows():
@@ -56,7 +62,7 @@ def visualisation(file_name_1, file_name_2, boundaries_df_clr1_filename, boundar
         elif change == 'merge':
             df = df.drop_duplicates(subset=['chrom', 'start_2', 'end_2'], keep='first')
 
-        df = df.head(5)
+        df = df.head(num_of_charts)
         most_diff_tads = []
         binsize = binsize * 1.5
         if change == 'merge':
