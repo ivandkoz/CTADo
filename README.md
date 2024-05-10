@@ -70,13 +70,18 @@ python CTADO.py -h
 ```
 
 ```bash
-usage: Differential analysis of interacting domains between two contact matrixes [-h] [-r1 RESULT_DF_1_NAME] [-r2 RESULT_DF_2_NAME]
-                                                                                 [-df RESULT_DATAFRAME_NAME] [-sd SAVE_DIRECTORY]
+usage: Differential analysis of interacting domains between two contact matrices [-h] [-r1 RESULT_DF_1_NAME]
+                                                                                 [-r2 RESULT_DF_2_NAME]
+                                                                                 [-df RESULT_DATAFRAME_NAME]
+                                                                                 [-od OUTPUT_DIRECTORY]
+                                                                                 [-nc NUMBER_OF_CHARTS]
                                                                                  [-lg {True,False}] [-t THREADS]
-                                                                                 clr1_filename clr2_filename resolution window flank
-                                                                                 binsize clr1_boundaries_name clr2_boundaries_name
+                                                                                 clr1_filename clr2_filename
+                                                                                 resolution window flank binsize
+                                                                                 clr1_boundaries_name
+                                                                                 clr2_boundaries_name
 
-This tool is needed to find four types of changes in TADs between two contact matrixes
+This tool is needed to find four types of changes in TADs between two contact matrices
 
 positional arguments:
   clr1_filename         Name of first contact matrix in mcool/cool format
@@ -85,39 +90,44 @@ positional arguments:
   window                Size of the sliding diamond window
   flank                 Flank size in bp
   binsize               Bin size in bp
-  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
-                        cooler insulation table
-  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name with TADs boundaries in chrom, start, end format or
-                        cooler insulation table
+  clr1_boundaries_name  The first contact matrix boundaries argument, a dataframe name with TADs boundaries in
+                        chrom, start, end format or cooler insulation table
+  clr2_boundaries_name  The second contact matrix boundaries argument, a dataframe name with TADs boundaries in
+                        chrom, start, end format or cooler insulation table
 
 options:
   -h, --help            show this help message and exit
   -r1 RESULT_DF_1_NAME, --result_df_1_name RESULT_DF_1_NAME
-                        The first contact matrix dataframe name with chrom, start & end of TADs
+                        The first contact matrix dataframe name with chrom, start & end of TADs (default: None)
   -r2 RESULT_DF_2_NAME, --result_df_2_name RESULT_DF_2_NAME
-                        The second contact matrix dataframe name with chrome, start & end of TADs
+                        The second contact matrix dataframe name with chrome, start & end of TADs (default: None)
   -df RESULT_DATAFRAME_NAME, --result_dataframe_name RESULT_DATAFRAME_NAME
-                        Dataframe name with intersecting TADs of two contact matrixes
-  -sd SAVE_DIRECTORY, --save_directory SAVE_DIRECTORY
-                        The path to the save directory
+                        Dataframe name with intersecting TADs of two contact matrices (default: None)
+  -od OUTPUT_DIRECTORY, --output_directory OUTPUT_DIRECTORY
+                        The path to the save directory (default: /home/ivandkoz/test_tad_2/differential-computing-
+                        TADs)
+  -nc NUMBER_OF_CHARTS, --number_of_charts NUMBER_OF_CHARTS
+                        The number of output charts for each type of change. If the specified number is greater than
+                        the number of events, then all of them will be output. If number is -1 than all of them will
+                        be output. (default: 5)
   -lg {True,False}, --logging {True,False}
-                        Enables logging
+                        Enables logging (default: False)
   -t THREADS, --threads THREADS
-                        Parameter for specifying the number of threads
+                        Parameter for specifying the number of threads (default: 1)
 
 Good luck! (∿°○°)∿ .・。.・゜✭・.・。.・゜✭・.・。.・゜✭
 ```
 
 To perform the test run use:
 ```
-python CTADO.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True
+ python CTADO.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv -od ctado_test -nc 3
 ```
 or
 ```
 python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 400000 200000 100000 4DNFIL6BHWZL_rs.mcool_400000_boundaries.csv 4DNFIHXCPUAP_rs.mcool_400000_boundaries.csv --save True -r1 4DNFIL6BHWZL_rs.mcool_400000_result_df.csv -r2 4DNFIHXCPUAP_rs.mcool_400000_result_df.csv -df intensity_change_result.csv
 ```
 
-Additionaly, you can see the whole example in GitHub Wiki.
+Additionaly, you can see the whole example in ![GitHub Wiki](https://github.com/ivandkoz/differential-computing-TADs/wiki).
 
 <br />
 Example of graphic:
