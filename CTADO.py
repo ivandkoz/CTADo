@@ -44,7 +44,7 @@ if __name__ == "__main__":
                         default=None, type=str, help='Dataframe name with intersecting TADs of two contact matrices')
     parser.add_argument('-od', '--output_directory', type=str,
                         default=f'{os.getcwd()}', help='The path to the save directory')
-    parser.add_argument('-nc', '--number_of_charts', type=int, choices=(-1, int),
+    parser.add_argument('-nc', '--number_of_charts', type=int,
                         default=5, help='The number of output charts for each type of change.\
                          If the specified number is greater than the number of events, then all of them will be output.\
                          If number is -1 than all of them will be output.')
