@@ -68,12 +68,13 @@ if __name__ == "__main__":
                                f'{args.output_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
                                f'{args.output_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
                                args.output_directory)
-    sys.stdout.write(f'Visualising...\n')
-    sys.stdout.flush()
+    sys.stderr.write(f'Visualising...\r')
+    sys.stderr.flush()
     for file in [INTENSITY, SPLIT, MERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name,
                       args.resolution, args.binsize, args.window, f'{args.output_directory}/{file}',
                       type_of_change, args.output_directory, args.number_of_charts)
-    sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.output_directory)}\n')
-    sys.stdout.flush()
+    sys.stderr.write(f'CTADO completed successfully!\n')
+    sys.stdout.write(f'Output location:\n{os.path.abspath(args.output_directory)}\n')
+    # sys.stdout.flush()

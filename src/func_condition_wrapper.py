@@ -1,4 +1,5 @@
 import sys
+import time
 import traceback
 import typing
 
@@ -11,12 +12,16 @@ FUNC_NAMES = {'count_tads_change_intensity': ['Searching changes in the intensit
 
 def wrapper_print(func: typing.Callable) -> typing.Callable:
     def wrapper(*args, **kwargs) -> typing.NoReturn:
-        sys.stdout.write(f'{FUNC_NAMES[func.__name__][0]}\n')
-        sys.stdout.flush()
+        sys.stderr.write(f'{FUNC_NAMES[func.__name__][0]}\r')
+        sys.stderr.flush()
         try:
             result = func(*args, **kwargs)
-            sys.stdout.write(f'Completed successfully! {FUNC_NAMES[func.__name__][1]}{result}\n')
+            sys.stderr.write(f'Completed successfully!                       \r')
+            sys.stderr.flush()
+            time.sleep(2)
+            sys.stdout.write(f'{FUNC_NAMES[func.__name__][1]}{result}\n')
             sys.stdout.flush()
+            time.sleep(2)
         except Exception as e:
             sys.stderr.write(traceback.format_exc())
 
