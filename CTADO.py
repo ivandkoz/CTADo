@@ -11,6 +11,12 @@ SPLIT = 'split_coords.csv'
 MERGE = 'merge_coords.csv'
 
 
+def counting_tads(file:os.path) -> int:
+    with open(file, 'r') as fp:
+        tads = sum(1 for row in fp)
+        return tads-1
+
+
 @parser_wrapper
 def parse() -> os.path:
     parser = argparse.ArgumentParser(
@@ -70,7 +76,10 @@ def parse() -> os.path:
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name,
                       args.resolution, args.binsize, args.window, f'{args.output_directory}/{file}',
                       type_of_change, args.output_directory, args.number_of_charts)
-    return os.path.abspath(args.output_directory)
+    output_dir = os.path.abspath(args.output_directory)
+    map1_tad_count = counting_tads(args.clr1_boundaries_name)
+    map2_tad_count = counting_tads(args.clr2_boundaries_name)
+    return output_dir, map1_tad_count, map2_tad_count
 
 
 if __name__ == "__main__":
