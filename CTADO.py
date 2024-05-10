@@ -57,23 +57,23 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     logger.disabled = not args.logging
 
-    if not os.path.exists(args.save_directory):
-        os.makedirs(args.save_directory)
+    if not os.path.exists(args.output_directory):
+        os.makedirs(args.output_directory)
 
     count_tads_change_intensity(args.clr1_filename, args.clr2_filename, args.resolution, args.window,
                                 args.flank, args.binsize, args.clr1_boundaries_name, args.clr2_boundaries_name,
                                 args.result_df_1_name, args.result_df_2_name, args.result_dataframe_name,
-                                args.save_directory, args.threads)
+                                args.output_directory, args.threads)
     main_split_merge_detection(args.clr1_filename, args.clr2_filename, args.resolution, args.binsize,
-                               f'{args.save_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
-                               f'{args.save_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
-                               args.save_directory)
+                               f'{args.output_directory}/{args.clr1_filename}_{args.window}_result_df.csv',
+                               f'{args.output_directory}/{args.clr2_filename}_{args.window}_result_df.csv',
+                               args.output_directory)
     sys.stdout.write(f'Visualising...\n')
     sys.stdout.flush()
     for file in [INTENSITY, SPLIT, MERGE]:
         type_of_change = file[:file.find('_')]
         visualisation(args.clr1_filename, args.clr2_filename, args.clr1_boundaries_name, args.clr2_boundaries_name,
-                      args.resolution, args.binsize, args.window, f'{args.save_directory}/{file}',
-                      type_of_change, args.save_directory, args.number_of_charts)
-    sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.save_directory)}\n')
+                      args.resolution, args.binsize, args.window, f'{args.output_directory}/{file}',
+                      type_of_change, args.output_directory, args.number_of_charts)
+    sys.stdout.write(f'CTADO completed successfully! Output location:\n{os.path.abspath(args.output_directory)}\n')
     sys.stdout.flush()
