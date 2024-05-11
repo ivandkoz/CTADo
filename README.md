@@ -47,8 +47,7 @@ git clone git@github.com:ivandkoz/CTADo.git && cd CTADo
 ```
 To create conda enviroment using enviroment.yml file:
 ```
-conda env create --name ctado -f environment.yml
-conda activate ctado
+conda env create --name ctado -f environment.yml && conda activate ctado
 ```
 
 ### Usage
