@@ -13,6 +13,12 @@ MERGE = 'merge_coords.csv'
 
 
 def counting_tads(file: os.path) -> int:
+    """
+    Count the number of TADs in a file.
+
+    :param file: The path to the file containing TAD information.
+    :return int: The number of TADs in the file.
+    """
     with open(file, 'r') as fp:
         tads = sum(1 for row in fp)
         return tads-1
@@ -20,6 +26,11 @@ def counting_tads(file: os.path) -> int:
 
 @parser_wrapper
 def parse() -> os.path:
+    """
+    Perform parsing of command line arguments and execute the analysis.
+
+    :return os.path: The path to the output directory and the count of TADs for each map.
+    """
     parser = argparse.ArgumentParser(
         prog='Differential analysis of interacting domains between two contact matrices',
         description='This tool is needed to find four types of changes in TADs\
