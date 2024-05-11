@@ -135,14 +135,26 @@ python tads_intensity.py 4DNFIL6BHWZL_rs.mcool 4DNFIHXCPUAP_rs.mcool 100000 4000
 
 Additionaly, you can see the whole example in [GitHub Wiki](https://github.com/ivandkoz/differential-computing-TADs/wiki/3.-Example).
 
-<br />
-Example of graphic:
+**Example of graphic:**
+
+
+**Intensity**
 <br />
 <div style='justify-content: center'>
-<img src="graphics/top_3_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
+<img src="/img/intensity_chr2_214600000.0_216800000.0.jpg" align='center', width="80%">
 </div>
 <br />
 
+**Split**
+<br />
+<div style='justify-content: center'>
+<img src="/img/split_chr2_153800000.0_158000000.0.jpg" align='center', width="80%">
+</div>
+<br />
 
-Example of split graphic:
-![image](https://github.com/ivandkoz/differential-computing-TADs/assets/131146976/36775868-dca9-478b-a917-4532e2235059)
+**Merge**
+<br />
+<div style='justify-content: center'>
+<img src="/img/merge_chr1_220100000.0_223300000.0.jpg" align='center', width="80%">
+</div>
+<br />
