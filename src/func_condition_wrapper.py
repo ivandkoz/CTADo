@@ -11,7 +11,20 @@ FUNC_NAMES = {'count_tads_change_intensity': ['Searching changes in the intensit
 
 
 def wrapper_print(func: typing.Callable) -> typing.Callable:
+    """
+    Decorator function to print progress messages and results of the decorated function.
+
+    :param func: The function to be decorated.
+    :return typing.Callable: The decorated function.
+    """
     def wrapper(*args, **kwargs) -> typing.NoReturn:
+        """
+        Wrapper function to print progress messages and results.
+
+        :param args: Variable length argument list.
+        :param kwargs: Arbitrary keyword arguments.
+        :return typing.NoReturn: No return value.
+        """
         sys.stderr.write(f'{FUNC_NAMES[func.__name__][0]}\r')
         sys.stderr.flush()
         try:
@@ -28,7 +41,20 @@ def wrapper_print(func: typing.Callable) -> typing.Callable:
 
 
 def visualise_wrapper(func: typing.Callable) -> typing.Callable:
+    """
+    Decorator function to perform visualization.
+
+    :param func: The function to be decorated.
+    :return typing.Callable: The decorated function.
+    """
     def wrapper_first(*args, **kwargs) -> typing.NoReturn:
+        """
+        Wrapper function to perform visualization.
+
+        :param args: Variable length argument list.
+        :param kwargs: Arbitrary keyword arguments.
+        :return typing.NoReturn: No return value.
+        """
         if not wrapper_first.used:
             wrapper_first.used = True
             sys.stderr.write(f'Visualising...\r')
@@ -40,7 +66,20 @@ def visualise_wrapper(func: typing.Callable) -> typing.Callable:
 
 
 def parser_wrapper(func: typing.Callable) -> typing.Callable:
+    """
+    Decorator function to handle parsing.
+
+    :param func: The function to be decorated.
+    :return typing.Callable: The decorated function.
+    """
     def wrapper_2(*args, **kwargs) -> typing.NoReturn:
+        """
+        Wrapper function to handle parsing.
+
+        :param args: Variable length argument list.
+        :param kwargs: Arbitrary keyword arguments.
+        :return typing.NoReturn: No return value.
+        """
         output_directory, map1_tad_count, map2_tad_count = func(*args, **kwargs)
         sys.stderr.write(f'CTADO completed successfully!\n')
         sys.stderr.flush()
