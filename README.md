@@ -157,4 +157,3 @@ Additionaly, you can see the whole example in [GitHub Wiki](https://github.com/i
 <img src="/img/merge_chr1_220100000.0_223300000.0.jpg" align='center', width="80%">
 </div>
 <br />
-
