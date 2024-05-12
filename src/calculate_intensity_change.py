@@ -3,29 +3,12 @@ import pandas as pd
 import numpy as np
 import cooltools
 import cooler
-from cooltools import insulation
-import pyranges as pr
 import scipy.stats as stats
 import warnings
 from src.func_condition_wrapper import wrapper_print
 
 warnings.filterwarnings(action='ignore', message='Mean of empty slice')
 pd.options.mode.chained_assignment = None
-
-def get_boundaries(file_name: str, resolution: int, window: int) -> pd.DataFrame:
-    '''
-    Sets the insulation_table for the given mcool file and window size.
-
-    :param file_name: name of mcool/cool file
-    :param resolution: resolution of mcool/cool file
-    :param window: the size of the sliding diamond window used to calculate the insulation score
-    :return: dataframe with all boundaries
-    '''
-    clr = cooler.Cooler(f'{file_name}::resolutions/{resolution}')
-    boundaries_df = insulation(clr, [window], verbose=True)
-
-    boundaries_df.to_csv(f'{file_name}_{window}_boundaries.csv')
-    return boundaries_df
 
 
 def creation_tads_dataframe(filename: str, resolution: int, window: int, boundaries_df_name: str, save_directory: str = './') -> pd.DataFrame:
